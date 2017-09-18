@@ -1,0 +1,83 @@
+---
+- name: "Read permission of GPG key directory"
+  stat:
+    path: /etc/pki/rpm-gpg/
+  register: gpg_key_directory_permission
+  check_mode: no
+
+- name: Read signatures in GPG key
+  shell: gpg --with-fingerprint '/etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7' | grep 'Key fingerprint =' | tr -s ' ' | sed 's;.*= ;;g'
+  changed_when: False
+  register: gpg_fingerprints
+  check_mode: no
+
+- name: Set Fact - Valid fingerprints
+  set_fact:
+    gpg_valid_fingerprints: ("6341 AB27 53D7 8A78 A7C2 7BB1 24C6 A8A7 F4A8 0EB5")
+
+- name: Import CentOS GPG key
+  rpm_key:
+    state: present
+    key: /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+  when:
+    (gpg_key_directory_permission.stat.mode <= '0755')
+    and (( gpg_fingerprints.stdout_lines | difference(gpg_valid_fingerprints)) | length == 0)
+    and (gpg_fingerprints.stdout_lines | length > 0)
+    and (ansible_distribution == "CentOS")
+  register: import_key
+
+- name: Make cache
+  command: "yum -q makecache -y"
+  changed_when: False
+  tags:
+    - skip_ansible_lint
+
+- name: "Ensure GPG check is globally activated (yum)"
+  ini_file:
+    dest: "{{ item }}"
+    section: main
+    option: gpgcheck
+    value: 1
+    create: False
+  with_items:
+    - "/etc/yum.conf"
+  when: ansible_distribution == "CentOS" or yum_config_file.stat.exists
+
+- name: "Ensure gpgcheck Enabled for local packages"
+  ini_file:
+    dest: "{{ item }}"
+    section: main
+    option: localpkg_gpgcheck
+    value: 1
+    create: False
+  with_items:
+    - "/etc/yum.conf"
+  when: ansible_distribution == "CentOS" or yum_config_file.stat.exists
+
+- name: "Ensure gpgcheck Enabled for Repository Metadata"
+  ini_file:
+    dest: "{{ item }}"
+    section: main
+    option: repo_gpgcheck
+    value: 1
+    create: False
+  with_items:
+    - "/etc/yum.conf"
+  when: ansible_distribution == "CentOS" or yum_config_file.stat.exists
+
+
+- name: "Ensure YUM removes previous package versions"
+  ini_file:
+    dest: "{{ item }}"
+    section: main
+    option: clean_requirements_on_remove
+    value: 1
+    create: False
+  with_items:
+    - "/etc/yum.conf"
+  when: ansible_distribution == "CentOS" or yum_config_file.stat.exists
+
+- name: Ensure cronie is installed
+  package:
+    name: cronie
+    state: installed

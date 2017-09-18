@@ -1,0 +1,60 @@
+---
+- name: Install screen
+  package:
+    name: screen
+    state: installed
+  when: security_screen == True
+
+- name: Disable ctrl-alt-del reboot activation
+  systemd:
+    name: "ctrl-alt-del.target"
+    masked: yes
+  when: security_ctrl_alt_del == True
+
+- name: Configure the login banner
+  copy:
+    dest: /etc/issue
+    src: files/issue
+  when: security_login_banner == True
+
+- name: Disable kdump service
+  service:
+    name: kdump
+    state: stopped
+    enabled: False
+  failed_when: False
+  when: security_disable_kdump == True
+
+- name: Enable cron service
+  service:
+    name: crond
+    state: started
+    enabled: True
+  when: security_disable_cron == False
+
+- name: Set default firewalld zone for incoming packets
+  lineinfile:
+    path: /etc/firewalld/firewalld.conf
+    line: "DefaultZone={{ item }}"
+    regexp: ^DefaultZone
+  with_items: "{{ security_default_firewalld_zone }}"
+
+- name: Disable prelinking
+  lineinfile:
+    create: True
+    path: /etc/sysconfig/prelink
+    regexp: '^PRELINKING='
+    line: 'PRELINKING=no'
+  when: security_disable_prelinking == True
+
+- name: Ensure SELinux is not disabled in grub
+  replace:
+    dest: /etc/default/grub
+    regexp: selinux=0
+  when: security_selinux_configure == True
+
+- name: Enable SELinux
+  selinux:
+    state: enforcing
+    policy: targeted
+  when: security_selinux_configure == True

@@ -1,0 +1,54 @@
+---
+- name: "Install dracut-fips"
+  package:
+    name: dracut-fips
+    state: installed
+
+- name: Check grub arguments
+  shell: |
+    grub_args=$(cat /etc/default/grub | grep GRUB_CMDLINE_LINUX)
+    cut -d '=' -f2- <<< "$grub_args"
+  register: grub_args
+  changed_when: False
+  tags:
+    - skip_ansible_lint
+
+- name: "Run dracut -f"
+  shell: "dracut -f"
+  when: "'fips=1' not in grub_args.stdout"
+  tags:
+    - skip_ansible_lint
+
+- name: "Enable FIPS mode in grub2"
+  shell: 'sed -i "s/\(GRUB_CMDLINE_LINUX=\)\"\(.*\)\"/\1\"\2 fips=1\"/" /etc/default/grub'
+  when: "'fips=1' not in grub_args.stdout"
+  tags:
+    - skip_ansible_lint
+
+- name: Check for efi
+  stat:
+    path: /sys/firmware/efi
+  register: efi_enabled
+
+- name: Register boot with EFI
+  shell: "df /boot/efi | tail -1 | awk '{print $1 }'"
+  register: boot_dir
+  when: efi_enabled.stat.exists
+  changed_when: False
+  tags:
+    - skip_ansible_lint
+
+- name: Register boot without EFI
+  shell: "df /boot | tail -1 | awk '{ print $1 }'"
+  register: boot_dir
+  when: efi_enabled.stat.exists == 'false'
+  changed_when: False
+  tags:
+    - skip_ansible_lint
+
+- name: "Correct kernel commandline for each installed kernel"
+  shell: '/sbin/grubby --update-kernel=ALL --args="boot={{ item }} fips=1"'
+  with_items: "{{ boot_dir }}"
+  when: "'fips=1' not in grub_args.stdout"
+  tags:
+    - skip_ansible_lint

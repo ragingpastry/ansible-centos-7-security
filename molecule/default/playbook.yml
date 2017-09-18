@@ -1,0 +1,10 @@
+---
+- name: Converge
+  hosts: all
+  roles:
+    - role: centos-7-security
+      security_mounts_configure: False
+      security_grub_configure: False
+      security_kernel_settings_configure: False
+      security_audit_configure: False
+      security_selinux_configure: False

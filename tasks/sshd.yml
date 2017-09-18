@@ -1,0 +1,22 @@
+---
+- name: Ensure SSHD is installed
+  package:
+    name: openssh-server
+    state: installed
+
+- name: Configure sshd
+  template:
+    dest: /etc/ssh/sshd_config
+    src: templates/sshd_config.j2
+
+- name: Ensure firewalld port is opened
+  firewalld:
+    service: ssh
+    permanent: true
+    state: enabled
+
+- name: Enable sshd service
+  service:
+    name: sshd
+    state: started
+    enabled: True

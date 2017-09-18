@@ -1,0 +1,5 @@
+---
+- name: Ensure kernel modules are disabled
+  template:
+    dest: /etc/modprobe.d/disa_stig_blacklist.conf
+    src: templates/disa_stig_blacklist.conf.j2

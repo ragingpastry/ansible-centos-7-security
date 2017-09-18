@@ -1,0 +1,19 @@
+---
+- name: "Ensure aide is installed"
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - aide
+
+- name: "Configure periodic Execution of AIDE"
+  cron:
+    name: Run AIDE
+    minute: "05"
+    hour: "4"
+    job: '/usr/sbin/aide --check | /bin/mail -s "$(hostname) - AIDE Integrity Check" root@localhost'
+
+- name: "Configure AIDE"
+  copy:
+    src: files/aide.conf
+    dest: /etc/aide.conf

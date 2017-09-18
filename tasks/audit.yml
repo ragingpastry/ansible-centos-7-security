@@ -1,0 +1,45 @@
+---
+- name: Ensure audit is installed
+  package:
+    name: audit
+    state: present
+
+- name: Ensure sendmail is installed
+  package:
+    name: sendmail
+    state: present
+  when: security_audit_space_left_action == 'email'
+
+- name: Configure auditd space_left action on low disk space
+  lineinfile:
+    create: True
+    path: /etc/audit/auditd.conf
+    line: "space_left_action = {{ security_audit_space_left_action }}"
+    regexp: ^space_left_action
+
+- name: Configure audit rules
+  template:
+    dest: /etc/audit/rules.d/audit.rules
+    src: templates/audit.rules.j2
+
+- name: Check kernel arguments
+  shell: |
+    kernel_args=$(/sbin/grubby --info=ALL | grep args)
+    cut -d '=' -f2- <<< "$kernel_args"
+  register: kernel_args
+  changed_when: False
+  tags:
+    - skip_ansible_lint
+
+- name: Enable auditing for processes which start prior to the audit daemon"
+  shell: /sbin/grubby --update-kernel=ALL --args="audit=1"
+  failed_when: False
+  when: "'audit=1' not in kernel_args.stdout"
+  tags:
+    - skip_ansible_lint
+
+- name: Enable auditd service
+  service:
+    name: auditd
+    state: started
+    enabled: True

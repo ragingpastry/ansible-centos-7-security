@@ -1,0 +1,13 @@
+---
+galaxy_info:
+  author: Nick Wilburn
+  description: CentOS7 DISA STIG security
+  license: BSD
+  min_ansible_version: 1.2
+  platforms:
+    - name: CentOS
+      versions:
+        - 7
+  galaxy_tags:
+    - security
+dependencies: []

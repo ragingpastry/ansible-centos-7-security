@@ -1,0 +1,17 @@
+---
+- name: Ensure rsyslog is installed
+  package:
+    name: rsyslog
+    state: present
+
+- name: Set rsyslog remote loghost
+  lineinfile:
+    dest: /etc/rsyslog.conf
+    regexp: "^\\*\\.\\*"
+    line: "*.* @@{{ security_rsyslog_host }}"
+
+- name: Enable rsyslog service
+  service:
+    name: rsyslog
+    state: started
+    enabled: True

@@ -1,0 +1,204 @@
+---
+- name: "get back device associated to mountpoint"
+  shell: mount | grep ' /tmp ' |cut -d ' ' -f 1
+  register: device_name
+  changed_when: False
+  check_mode: no
+  tags:
+    - skip_ansible_lint
+
+- name: "get back device previous mount option"
+  shell: mount | grep ' /tmp ' | sed -re 's:.*\((.*)\):\1:'
+  register: device_cur_mountoption
+  changed_when: False
+  check_mode: no
+  tags:
+    - skip_ansible_lint
+
+- name: "get back device fstype"
+  shell: mount | grep ' /tmp ' | cut -d ' ' -f 5
+  register: device_fstype
+  changed_when: False
+  check_mode: no
+  tags:
+    - skip_ansible_lint
+
+- name: "Ensure permission nodev are set on /tmp"
+  mount:
+    path: "/tmp"
+    src: "{{ device_name.stdout }}"
+    opts: "{{ device_cur_mountoption.stdout }},nodev"
+    state: "mounted"
+    fstype: "{{ device_fstype.stdout }}"
+  when: "'nodev' not in device_cur_mountoption.stdout"
+
+
+- name: "get back device associated to mountpoint"
+  shell: mount | grep ' /tmp ' |cut -d ' ' -f 1
+  register: device_name
+  changed_when: False
+  check_mode: no
+  tags:
+    - skip_ansible_lint
+
+- name: "get back device previous mount option"
+  shell: mount | grep ' /tmp ' | sed -re 's:.*\((.*)\):\1:'
+  register: device_cur_mountoption
+  changed_when: False
+  check_mode: no
+  tags:
+    - skip_ansible_lint
+
+- name: "get back device fstype"
+  shell: mount | grep ' /tmp ' | cut -d ' ' -f 5
+  register: device_fstype
+  changed_when: False
+  check_mode: no
+  tags:
+    - skip_ansible_lint
+
+- name: "Ensure permission noexec are set on /tmp"
+  mount:
+    path: "/tmp"
+    src: "{{ device_name.stdout }}"
+    opts: "{{ device_cur_mountoption.stdout }},noexec"
+    state: "mounted"
+    fstype: "{{ device_fstype.stdout }}"
+  when:
+    - "security_mount_options_tmp_noexec == True"
+    - "'noexec' not in device_cur_mountoption.stdout"
+
+- name: "get back device associated to mountpoint"
+  shell: mount | grep ' /tmp ' |cut -d ' ' -f 1
+  register: device_name
+  changed_when: False
+  check_mode: no
+  tags:
+    - skip_ansible_lint
+
+- name: "get back device previous mount option"
+  shell: mount | grep ' /tmp ' | sed -re 's:.*\((.*)\):\1:'
+  register: device_cur_mountoption
+  changed_when: False
+  check_mode: no
+  tags:
+    - skip_ansible_lint
+
+- name: "get back device fstype"
+  shell: mount | grep ' /tmp ' | cut -d ' ' -f 5
+  register: device_fstype
+  changed_when: False
+  check_mode: no
+  tags:
+    - skip_ansible_lint
+
+- name: "Ensure permission nosuid are set on /tmp"
+  mount:
+    path: "/tmp"
+    src: "{{ device_name.stdout }}"
+    opts: "{{ device_cur_mountoption.stdout }},nosuid"
+    state: "mounted"
+    fstype: "{{ device_fstype.stdout }}"
+  when: "'nosuid' not in device_cur_mountoption.stdout"
+
+
+- name: "get back device associated to mountpoint"
+  shell: mount | grep ' /dev/shm ' |cut -d ' ' -f 1
+  register: device_name
+  changed_when: False
+  check_mode: no
+  tags:
+    - skip_ansible_lint
+
+- name: "get back device previous mount option"
+  shell: mount | grep ' /dev/shm ' | sed -re 's:.*\((.*)\):\1:'
+  register: device_cur_mountoption
+  changed_when: False
+  check_mode: no
+  tags:
+    - skip_ansible_lint
+
+- name: "get back device fstype"
+  shell: mount | grep ' /dev/shm ' | cut -d ' ' -f 5
+  register: device_fstype
+  changed_when: False
+  check_mode: no
+  tags:
+    - skip_ansible_lint
+
+- name: "Ensure permission nodev are set on /dev/shm"
+  mount:
+    path: "/dev/shm"
+    src: "{{ device_name.stdout }}"
+    opts: "{{ device_cur_mountoption.stdout }},nodev"
+    state: "mounted"
+    fstype: "{{ device_fstype.stdout }}"
+  when: "'nodev' not in device_cur_mountoption.stdout"
+
+
+- name: "get back device associated to mountpoint"
+  shell: mount | grep ' /dev/shm ' |cut -d ' ' -f 1
+  register: device_name
+  changed_when: False
+  check_mode: no
+  tags:
+    - skip_ansible_lint
+
+- name: "get back device previous mount option"
+  shell: mount | grep ' /dev/shm ' | sed -re 's:.*\((.*)\):\1:'
+  register: device_cur_mountoption
+  changed_when: False
+  check_mode: no
+  tags:
+    - skip_ansible_lint
+
+- name: "get back device fstype"
+  shell: mount | grep ' /dev/shm ' | cut -d ' ' -f 5
+  register: device_fstype
+  changed_when: False
+  check_mode: no
+  tags:
+    - skip_ansible_lint
+
+- name: "Ensure permission noexec are set on /dev/shm"
+  mount:
+    path: "/dev/shm"
+    src: "{{ device_name.stdout }}"
+    opts: "{{ device_cur_mountoption.stdout }},noexec"
+    state: "mounted"
+    fstype: "{{ device_fstype.stdout }}"
+  when: "'noexec' not in device_cur_mountoption.stdout"
+
+
+- name: "get back device associated to mountpoint"
+  shell: mount | grep ' /dev/shm ' |cut -d ' ' -f 1
+  register: device_name
+  changed_when: False
+  check_mode: no
+  tags:
+    - skip_ansible_lint
+
+- name: "get back device previous mount option"
+  shell: mount | grep ' /dev/shm ' | sed -re 's:.*\((.*)\):\1:'
+  register: device_cur_mountoption
+  changed_when: False
+  check_mode: no
+  tags:
+    - skip_ansible_lint
+
+- name: "get back device fstype"
+  shell: mount | grep ' /dev/shm ' | cut -d ' ' -f 5
+  register: device_fstype
+  changed_when: False
+  check_mode: no
+  tags:
+    - skip_ansible_lint
+
+- name: "Ensure permission nosuid are set on /dev/shm"
+  mount:
+    path: "/dev/shm"
+    src: "{{ device_name.stdout }}"
+    opts: "{{ device_cur_mountoption.stdout }},nosuid"
+    state: "mounted"
+    fstype: "{{ device_fstype.stdout }}"
+  when: '"nosuid" not in device_cur_mountoption.stdout'

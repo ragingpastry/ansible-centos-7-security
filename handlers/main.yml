@@ -1,0 +1,6 @@
+---
+# handlers file for centos-7-security
+- name: reload sysctl
+  shell: sysctl -p /etc/sysctl.conf
+  tags:
+    - skip_ansible_lint
