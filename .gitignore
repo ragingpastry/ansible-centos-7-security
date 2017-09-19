@@ -13,4 +13,5 @@ playbook.retry
 Session.vim
 .netrwhist
 *~
+*.vscode/
 
