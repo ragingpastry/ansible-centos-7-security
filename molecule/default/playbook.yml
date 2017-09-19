@@ -2,7 +2,7 @@
 - name: Converge
   hosts: all
   roles:
-    - role: centos-7-security
+    - role: ansible-centos-7-security
       security_mounts_configure: False
       security_grub_configure: False
       security_kernel_settings_configure: False

@@ -2,14 +2,22 @@
 - name: Converge
   hosts: all
   gather_facts: False
+  become: True
   tasks:
     - name: Install python for Ansible
       raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
       become: True
       changed_when: False
+    - name: Install oscap
+      yum:
+        name: "{{ item }}"
+        state: installed
+      with_items:
+        - "openscap-scanner"
+        - "scap-security-guide"
 
 - name: Converge
   hosts: all
   become: True
   roles:
-    - role: centos-7-security
+    - role: ansible-centos-7-security

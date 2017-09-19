@@ -1,6 +1,7 @@
 .cache/
 .molecule/
 .tox/
+*.log
 tests/.cache
 **/tests/__pycache__/
 **/.vagrant/**
