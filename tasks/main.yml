@@ -30,4 +30,7 @@
 - include: grub.yml
   when: security_grub_configure == True
 
+- include: gnome.yml
+  when: security_gnome_configure == True
+
 - include: miscellaneous.yml

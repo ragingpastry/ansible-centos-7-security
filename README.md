@@ -5,7 +5,8 @@ This role will configure a CentOS7 system with a hardened baseline based on the 
 
 Requirements
 ------------
-This role has no external requirements.
+
+This role has no external requirements by itself. The testing of those role does depend on various packages. Please see the testing section
 
 Role Variables
 --------------
@@ -13,14 +14,44 @@ Role Variables
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
     - hosts: servers
       roles:
-         - { role: centos-7-security, x: 42 }
+         - role: ansible-centos-7-security
+           
 
 Testing
 -------
+
+#### Overview
+This role is tested again a vagrant box that can be built with packer. The vagrant box that this role expects can be found here: https://github.com/ragingpastry/oscap-cent7-stig-disa
+
+There are multiple environments in which these tests work. There are defined by molecule and live in molecule/*
+
+There is a workstation environment and a "base" environment available for testing currently. There apply different standards and require different baselines. They also utilize different packer images.
+
+
+##### Dependencies
+1. python-vagrant
+2. molecule
+3. libvirt
+4. qemu-system-x86  
+5. vagrant
+
+#### Getting Started
+1. Install Depencencies
+  - `pip install python-vagrant molecule`
+  - `yum install -y libvirt qemu-system-x86`
+  - `systemctl enable libvirtd && systemctl start libvirtd`
+  - `yum install https://releases.hashicorp.com/vagrant/2.0.0/vagrant_2.0.0_x86_64.rpm?_ga=2.127819083.799844635.1505866621-1550139530.1505771974`
+2. Build Packer images (if required)
+  - `git clone https://github.com/ragingpastry/oscap-cent7-stig-disa`
+  - `cd oscap-cent7-stig-disa`
+  - `packer build packer/<packer image>.json`
+3. Add packer images to vagrant
+  - `vagrant box add --name centos7-stig-disa`
+4. Run tests
+  - `tox`
+
 
 This role is tested again a vagrant box that can be built with packer. The vagrant box that this role expects can be found here: https://github.com/ragingpastry/oscap-cent7-stig-disa
 

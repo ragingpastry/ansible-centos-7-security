@@ -1,0 +1,29 @@
+---
+- name: Disable GDM automatic and guest login
+  template:
+    src: templates/custom.conf.j2
+    dest: /etc/gdm/custom.conf
+
+- name: Configure GNOME security settings
+  template:
+    src: templates/00-security-settings.j2
+    dest: /etc/dconf/db/local.d/10-scap-security-guide
+  notify: dconf update
+
+- name: Configure GDM Banners
+  template:
+    src: templates/00-security-settings-gdm.j2
+    dest: /etc/dconf/db/gdm.d/00-security-settings
+  notify: dconf update
+
+- name: Configure GNOME security locks
+  copy:
+    src: files/00-security-settings-lock
+    dest: /etc/dconf/db/local.d/locks/00-security-settings-lock
+  notify: dconf update
+
+- name: Configure GDM locks
+  copy:
+    src: files/00-security-settings-lock-gdm
+    dest: /etc/dconf/db/gdm.d/locks/00-security-settings-lock
+  notify: dconf update

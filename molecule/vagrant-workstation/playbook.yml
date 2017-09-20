@@ -7,8 +7,15 @@
       raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
       become: True
       changed_when: False
+    - name: Install oscap
+      yum:
+        name: "{{ item }}"
+        state: installed
+      with_items:
+        - "openscap-scanner"
+        - "scap-security-guide"
 
 - name: Converge
   hosts: all
   roles:
-    - role: centos-7-security
+    - role: ansible-centos-7-security

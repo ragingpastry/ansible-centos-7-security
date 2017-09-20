@@ -4,3 +4,8 @@
   shell: sysctl -p /etc/sysctl.conf
   tags:
     - skip_ansible_lint
+
+- name: dconf update
+  shell: dconf update
+  tags:
+    - skip_ansible_lint

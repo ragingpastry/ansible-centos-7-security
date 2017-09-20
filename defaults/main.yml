@@ -41,7 +41,7 @@ security_authentication_maxlogins: 10
 security_authentication_logon_failure_delay: 4
 
 security_authentication_difok: 8
-security_authentication_minlen: 5
+security_authentication_minlen: 15
 security_authentication_dcredit: -1
 security_authentication_ucredit: -1
 security_authentication_lcredit: -1
@@ -96,6 +96,13 @@ security_sshd_macs: "hmac-sha2-512,hmac-sha2-256,hmac-sha1,hmac-sha1-etm@openssh
 
 ### Grub Settings
 security_grub_configure: True
+
+### GNOME Settings
+security_gnome_configure: True
+security_gnome_screensaver_inactivity_timeout: 900
+security_gnome_screensaver_idle_activation: "true"
+security_gnome_screensaver_lock_enabled: "true"
+security_gnome_screensaver_lock_delay: 0
 
 
 ### Miscellaneous Settings
