@@ -42,7 +42,7 @@ There is a workstation environment and a "base" environment available for testin
   - `pip install python-vagrant molecule`
   - `yum install -y libvirt qemu-system-x86`
   - `systemctl enable libvirtd && systemctl start libvirtd`
-  - `yum install https://releases.hashicorp.com/vagrant/2.0.0/vagrant_2.0.0_x86_64.rpm?_ga=2.127819083.799844635.1505866621-1550139530.1505771974`
+  - `yum install https://releases.hashicorp.com/vagrant/2.0.0/vagrant_2.0.0_x86_64.rpm`
 2. Build Packer images (if required)
   - `git clone https://github.com/ragingpastry/oscap-cent7-stig-disa`
   - `cd oscap-cent7-stig-disa`
@@ -51,9 +51,6 @@ There is a workstation environment and a "base" environment available for testin
   - `vagrant box add --name centos7-stig-disa`
 4. Run tests
   - `tox`
-
-
-This role is tested again a vagrant box that can be built with packer. The vagrant box that this role expects can be found here: https://github.com/ragingpastry/oscap-cent7-stig-disa
 
 Basically, we just need to make sure that partitioning is correct. The following describes the paritioning in the vagrant box
 
