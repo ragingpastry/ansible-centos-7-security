@@ -1,4 +1,4 @@
-#CentOS 7 Security
+CentOS 7 Security
 =========
 
 This role will configure a CentOS7 system with a hardened baseline based on the CentOS7 DISA STIGs
@@ -48,7 +48,8 @@ There is a workstation environment and a "base" environment available for testin
   - `cd oscap-cent7-stig-disa`
   - `packer build packer/<packer image>.json`
 3. Add packer images to vagrant
-  - `vagrant box add --name centos7-stig-disa`
+  - `vagrant box add --name centos7-stig-disa`  
+  This needs to be named either centos7-stig-disa or centos7-stig-disa-workstation. Molecule will look for these vagrant boxes. These are defined in `molecule/vagrant` and `molecule/vagrant-workstation`
 4. Run tests
   - `tox`
 
