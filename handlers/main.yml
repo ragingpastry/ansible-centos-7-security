@@ -9,3 +9,8 @@
   shell: dconf update
   tags:
     - skip_ansible_lint
+
+- name: restart rsyslog
+  service:
+    name: rsyslog
+    state: restarted

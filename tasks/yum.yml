@@ -29,6 +29,8 @@
 - name: Make cache
   command: "yum -q makecache -y"
   changed_when: False
+  args:
+    warn: no
   tags:
     - skip_ansible_lint
 

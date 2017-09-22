@@ -4,11 +4,11 @@
     name: rsyslog
     state: present
 
-- name: Set rsyslog remote loghost
-  lineinfile:
+- name: Configure rsyslog
+  template:
+    src: templates/rsyslog.conf.j2
     dest: /etc/rsyslog.conf
-    regexp: "^\\*\\.\\*"
-    line: "*.* @@{{ security_rsyslog_host }}"
+  notify: restart rsyslog
 
 - name: Enable rsyslog service
   service:

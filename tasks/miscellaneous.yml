@@ -58,3 +58,10 @@
     state: enforcing
     policy: targeted
   when: security_selinux_configure == True
+
+- name: Prevent unrestricted mail relaying
+  lineinfile:
+    path: /etc/postfix/main.cf
+    regexp: '^smtpd_client_restrictions'
+    line: 'smtpd_client_restrictions = permit_my_networks,reject'
+  when: security_postfix_restrict_relaying == True

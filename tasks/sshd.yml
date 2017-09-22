@@ -9,6 +9,15 @@
     dest: /etc/ssh/sshd_config
     src: templates/sshd_config.j2
 
+- name: Fix SSH host key permissions
+  file:
+    path: "/etc/ssh/{{ item }}"
+    mode: 0600
+  with_items:
+    - "ssh_host_ecdsa_key"
+    - "ssh_host_ed25519_key"
+    - "ssh_host_rsa_key"
+
 - name: Ensure firewalld port is opened
   firewalld:
     service: ssh

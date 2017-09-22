@@ -1,4 +1,5 @@
 /org/gnome/desktop/session/idle-delay
+/org/gnome/desktop/screensaver/idle-delay
 /org/gnome/desktop/screensaver/idle-activation-enabled
 /org/gnome/desktop/screensaver/lock-enabled
 /org/gnome/desktop/screensaver/lock-delay

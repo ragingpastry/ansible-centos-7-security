@@ -27,3 +27,21 @@
     src: files/00-security-settings-lock-gdm
     dest: /etc/dconf/db/gdm.d/locks/00-security-settings-lock
   notify: dconf update
+
+- name: Ensure symlinks are in place
+  file:
+    src: /etc/dconf/db/local.d/10-scap-security-guide
+    dest: "{{ item }}"
+    state: link
+  with_items:
+    - "/etc/dconf/db/local.d/00-disable-CAD"
+    - "/etc/dconf/db/local.d/01-banner-message"
+  when: centos_7_security_scanner == 'nessus'
+
+- name: Ensure symlinks are in place
+  file:
+    src: /etc/dconf/db/gdm.d/00-security-settings
+    dest: "{{ item }}"
+    state: link
+  with_items:
+    - "/etc/dconf/db/gdm.d/01-banner-message"

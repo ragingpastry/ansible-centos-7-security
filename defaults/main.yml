@@ -1,4 +1,8 @@
 ---
+### Scanner
+### Uncomment this is you are using nessus to scan
+# centos_7_security_scanner: "nessus"
+
 ### Yum Settings
 security_yum_verify_gpg: True
 
@@ -29,7 +33,7 @@ security_authentication_configure: True
 security_authentication_direct_root_login: False
 security_authentication_disable_inactive: True
 security_authentication_failed_password_deny: 3
-security_authentication_unlock_time: "never"
+security_authentication_unlock_time: "604800"
 security_authentication_deny_root: True
 security_authentication_fail_interval: 900
 security_authentication_password_retry: 3
@@ -39,6 +43,7 @@ security_authentication_password_maximum_age: 90
 security_authentication_session_timeout: 600
 security_authentication_maxlogins: 10
 security_authentication_logon_failure_delay: 4
+security_authentication_pwquality_retry: 3
 
 security_authentication_difok: 8
 security_authentication_minlen: 15
@@ -50,6 +55,11 @@ security_authentication_minclass: 4
 security_authentication_maxrepeat: 2
 security_authentication_maxclassrepeat: 4
 
+security_authentication_multifactor_packages:
+  - esc
+  - authconfig-gtk
+  - pam_pkcs11
+
 ### Kernel Settings
 security_kernel_settings_configure: True
 security_kernel_default_send_redirects: 0
@@ -59,6 +69,8 @@ security_kernel_all_accept_redirects: 0
 security_kernel_default_accept_redirects: 0
 security_kernel_icmp_echo_ignore_broadcasts: 1
 security_kernel_ipv6_all_accept_source_route: 0
+security_kernel_default_accept_source_route: 0
+security_kernel_ipv4_all_accept_source_route: 0
 security_kernel_kernel_randomize_va_space: 2
 security_kernel_fs_suid_dumpable: 0
 
@@ -69,10 +81,17 @@ security_audit_record_unauthorized_access_attempts: True
 security_audit_record_altered_logon_events: True
 security_audit_record_selinux_commands: True
 security_audit_record_privileged_commands: True
+security_audit_record_deletion: True
+security_audit_record_permission_modification: True
 security_audit_record_modules: True
 security_audit_record_usergroup: True
 security_audit_record_sudoers: True
 
+security_audit_audisp_configure: True
+security_audit_audisp_remote_server: "loghost"
+security_audit_audisp_disk_full_action: "syslog"
+security_audit_audisp_network_failure_action: "syslog"
+security_audit_audisp_enable_krb5: "yes"
 ### Rsyslog Settings
 security_rsyslog_configure: True
 security_rsyslog_host: "loghost"
@@ -82,7 +101,7 @@ security_sshd_configure: True
 security_sshd_permit_root_login: "no"
 security_sshd_permit_empty_passwords: "no"
 security_sshd_permit_user_env: "no"
-security_sshd_ciphers: "aes128-ctr,aes192-ctr,aes256-ctr,aes128-cbc,3des-cbc,aes192-cbc,aes256-cbc"
+security_sshd_ciphers: "aes128-ctr,aes192-ctr,aes256-ctr"
 security_sshd_kerberos_authentication: "no"
 security_sshd_strict_mode: "yes"
 security_sshd_use_privilege_separation: "yes"
@@ -91,8 +110,9 @@ security_sshd_print_lastlog: "yes"
 security_sshd_client_alive_interval: 600
 security_sshd_client_alive_count_max: 0
 security_sshd_ignore_user_known_hosts: "yes"
-security_sshd_rhosts_rsa_authentication: "no"
+security_sshd_rhosts_rsa_authentication: "yes"
 security_sshd_macs: "hmac-sha2-512,hmac-sha2-256,hmac-sha1,hmac-sha1-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com"
+security_sshd_ignore_rhosts: "yes"
 
 ### Grub Settings
 security_grub_configure: True
@@ -102,8 +122,7 @@ security_gnome_configure: True
 security_gnome_screensaver_inactivity_timeout: 900
 security_gnome_screensaver_idle_activation: "true"
 security_gnome_screensaver_lock_enabled: "true"
-security_gnome_screensaver_lock_delay: 0
-
+security_gnome_screensaver_lock_delay: 5
 
 ### Miscellaneous Settings
 security_screen: True
@@ -114,3 +133,4 @@ security_disable_cron: False
 security_default_firewalld_zone: "drop"
 security_disable_prelinking: True
 security_selinux_configure: True
+security_postfix_restrict_relaying: True

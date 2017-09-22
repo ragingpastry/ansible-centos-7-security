@@ -19,3 +19,6 @@
   hosts: all
   roles:
     - role: ansible-centos-7-security
+      centos_7_security_scanner: oscap
+      security_profile: stig-rhel7-disa
+      security_authentication_unlock_time: "never"

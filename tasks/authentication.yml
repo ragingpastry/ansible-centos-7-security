@@ -95,9 +95,30 @@
     regexp: "^\\* hard maxlogins"
   with_items: "{{ security_authentication_maxlogins }}"
 
+- name: Ensure pwquality is used for password changes
+  template:
+    src: templates/passwd.j2
+    dest: /etc/pam.d/passwd
+
 - name: Ensure the logon failure delay is set correctly in login.defs
   lineinfile:
     path: /etc/login.defs
     line: "FAIL_DELAY {{ item }}"
     regexp: "^FAIL_DELAY"
   with_items: "{{ security_authentication_logon_failure_delay }}"
+
+- name: Ensure system date and time of last login is shown on login
+  copy:
+    src: files/postlogin-ac
+    dest: /etc/pam.d/postlogin-ac
+
+- name: Ensure system date and time of last login is shown - ssh
+  copy:
+    src: files/pam-sshd
+    dest: /etc/pam.d/sshd
+
+- name: Install packages for multifactor authentication
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ security_authentication_multifactor_packages }}"

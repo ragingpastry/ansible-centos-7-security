@@ -1,5 +1,5 @@
 [org/gnome/desktop/session]
-idle-delay='uint32 {{ security_gnome_screensaver_inactivity_timeout }}'
+idle-delay=uint32 {{ security_gnome_screensaver_inactivity_timeout }}
 
 [org/gnome/desktop/screensaver]
 idle-activation-enabled={{ security_gnome_screensaver_idle_activation }}
@@ -9,6 +9,9 @@ lock-enabled={{ security_gnome_screensaver_lock_enabled }}
 
 [org/gnome/desktop/screensaver]
 lock-delay=uint32 {{ security_gnome_screensaver_lock_delay }}
+
+[org/gnome/settings-daemon/plugins/media-keys]
+logout=''
 
 [org/gnome/login-screen]
 disable-user-list=true

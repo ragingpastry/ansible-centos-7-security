@@ -10,6 +10,8 @@
       net.ipv4.conf.all.accept_redirects = {{ security_kernel_all_accept_redirects }}
       net.ipv4.conf.default.accept_redirects = {{ security_kernel_default_accept_redirects }}
       net.ipv4.icmp_echo_ignore_broadcasts = {{ security_kernel_icmp_echo_ignore_broadcasts }}
+      net.ipv4.conf.all.accept_source_route = {{ security_kernel_ipv4_all_accept_source_route }}
+      net.ipv4.conf.default.accept_source_route = {{ security_kernel_default_accept_source_route }}
       net.ipv6.conf.all.accept_source_route = {{ security_kernel_ipv6_all_accept_source_route }}
       kernel.randomize_va_space = {{ security_kernel_kernel_randomize_va_space }}
       fs.suid_dumpable = {{ security_kernel_fs_suid_dumpable }}

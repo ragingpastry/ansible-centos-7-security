@@ -1,8 +1,11 @@
 ---
-- name: Ensure audit is installed
+- name: Ensure audit packages are installed
   package:
-    name: audit
+    name: "{{ item }}"
     state: present
+  with_items:
+    - "audit"
+    - "audispd-plugins"
 
 - name: Ensure sendmail is installed
   package:
@@ -16,6 +19,12 @@
     path: /etc/audit/auditd.conf
     line: "space_left_action = {{ security_audit_space_left_action }}"
     regexp: ^space_left_action
+
+- name: Configure audispd
+  template:
+    src: templates/audisp-remote.conf.j2
+    dest: /etc/audisp/audisp-remote.conf
+  when: security_audit_audisp_configure == True
 
 - name: Configure audit rules
   template:
