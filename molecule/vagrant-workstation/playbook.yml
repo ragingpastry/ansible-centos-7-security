@@ -22,3 +22,10 @@
       centos_7_security_scanner: oscap
       security_profile: stig-rhel7-disa
       security_authentication_unlock_time: "never"
+
+  post_tasks:
+    - name: Reboot after converge
+      shell: ( sleep 3 && /sbin/reboot & )
+      async: 0
+      poll: 0
+      changed_when: False

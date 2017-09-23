@@ -2,3 +2,4 @@ docker-py
 python-vagrant
 lxml
 molecule
+ansible==2.3.2.0
