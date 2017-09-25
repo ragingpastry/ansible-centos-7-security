@@ -131,6 +131,7 @@ security_login_banner: True
 security_disable_kdump: True
 security_disable_cron: False
 security_default_firewalld_zone: "drop"
+security_configure_firewalld: True
 security_disable_prelinking: True
 security_selinux_configure: True
 security_postfix_restrict_relaying: True
