@@ -8,6 +8,7 @@
   template:
     dest: /etc/ssh/sshd_config
     src: templates/sshd_config.j2
+  notify: restart sshd
 
 - name: Fix SSH host key permissions
   file:
