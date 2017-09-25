@@ -12,9 +12,9 @@
   when: security_ctrl_alt_del == True
 
 - name: Configure the login banner
-  copy:
+  template:
     dest: /etc/issue
-    src: files/issue
+    src: templates/issue.j2
   when: security_login_banner == True
 
 - name: Disable kdump service
