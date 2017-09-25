@@ -24,7 +24,7 @@
 
   post_tasks:
     - name: Reboot after converge
-      shell: ( sleep 3 && /sbin/reboot & ) 
+      shell: ( sleep 3 && /sbin/reboot & )
       async: 0
       poll: 0
       changed_when: False
