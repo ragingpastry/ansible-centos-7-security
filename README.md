@@ -11,12 +11,61 @@ This role has no external requirements by itself. The testing of those role does
 Role Variables
 --------------
 
+There are too many variables for this role to go over here. Please see `defaults/main.yml` for a full list.  
+
+**centos_7_ssecurity_scanner**
+  * Type: String
+  * Default: Nessus
+  * This variable defines which security verifier we will be attempting to match. Different scanners will look for different implementations of the DISA STIG security rules.
+
+**security_banner_text**
+  * Type: String
+  * Default: Long String
+  * This variable defines the login/ssh banner to display. This may be different per environment
+
+**security_audit_configure**
+  * Type: Boolean
+  * Default: True
+  * This variable controls the auditing rules. This role uses many variables like this to control various aspects of the hardening. By default we will implement all auditing rules (and turn them on). This may effect performance.
+
+**security_mounts_configure**
+  * Type: Boolean
+  * Default: True
+  * This variable controls the application of paritioning and mount options. When turned off, the playbook will not check for noexec,nosuid on mountpoints
+
+**security_mount_options_tmp_noexec**
+  * Type: Boolean
+  * Default: True
+  * By default we will enforce noexec on the tmp partition. Change this to False to disable
+
+**security_module_blacklist**
+  * Type: List
+  * Default: ["cramfs","freevxfs","jffs2","hfs","hfsplus","squashfs","udf","usb-storage","bluetooth","dccp","sctp"]
+  * Which kernel modules to blacklist. The default will blacklist everything that DISA STIGs require
+
+**security_rsyslog_host**
+  * Type: String
+  * Default: loghost
+  * The loghost server to ship our logs to
+
+**security_configure_firewalld**
+  * Type: Boolean
+  * Default: True
+  * This variable controls the playbook's ability to manage firewalld. If set to True then the playbook will modify the default zone for the gateway interface and control the default firewalld zone
+
+**security_default_firewalld_zone**
+  * Type: String
+  * Default: "drop"
+  * DISA STIGs call for the default firewalld zone to be "drop". When network interfaces are added to firewalld they are assigned to the default zone.
+
 Example Playbook
 ----------------
 
     - hosts: servers
       roles:
          - role: ansible-centos-7-security
+           security_audit_configure: False
+           security_mounts_configure: False
            
 
 Testing
@@ -25,7 +74,7 @@ Testing
 #### Overview
 This role is tested again a vagrant box that can be built with packer. The vagrant box that this role expects can be found here: https://github.com/ragingpastry/oscap-cent7-stig-disa
 
-There are multiple environments in which these tests work. There are defined by molecule and live in molecule/*
+There are multiple environments in which these tests work. There are defined by molecule and live in `molecule/*`
 
 There is a workstation environment and a "base" environment available for testing currently. There apply different standards and require different baselines. They also utilize different packer images.
 
