@@ -3,6 +3,11 @@ CentOS 7 Security
 
 This role will configure a CentOS7 system with a hardened baseline based on the CentOS7 DISA STIGs
 
+Why this role?
+  - Different compliance scanners look for implementations of the DISA STIGs (or any other compliance guideline) in different ways. Nessus may be looking for a value of `True` while oscap-scanner looks for a value of `true`
+  - This role aims to simply compliance. You choose your scanner, your compliance guidelines, your specific compiance settings (optional), then you run the role. 
+  - Idempotency. This role can be ran multiple times against the same host without adverse effects. Idempotency is important in any Ansible role, but especially true when trying to enforce and maintain a compliance baseline
+
 Requirements
 ------------
 
@@ -13,7 +18,7 @@ Role Variables
 
 There are too many variables for this role to go over here. Please see `defaults/main.yml` for a full list.  
 
-**centos_7_ssecurity_scanner**
+**centos_7_security_scanner**
   * Type: String
   * Default: Nessus
   * This variable defines which security verifier we will be attempting to match. Different scanners will look for different implementations of the DISA STIG security rules.
