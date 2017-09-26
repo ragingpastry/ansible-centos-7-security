@@ -43,7 +43,8 @@
     create: False
   with_items:
     - "/etc/yum.conf"
-  when: ansible_distribution == "CentOS" or yum_config_file.stat.exists
+  when: (ansible_distribution == "CentOS" or yum_config_file.stat.exists) and
+         security_yum_repo_gpgcheck == True
 
 - name: "Ensure gpgcheck Enabled for local packages"
   ini_file:

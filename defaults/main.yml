@@ -5,6 +5,7 @@
 
 ### Yum Settings
 security_yum_verify_gpg: True
+security_yum_repo_gpgcheck: True
 
 ### AIDE Settings
 security_aide_configure: True
