@@ -31,7 +31,7 @@ security_module_blacklist:
 
 ### Authentication Settings
 security_authentication_configure: True
-security_authentication_direct_root_login: False
+security_authentication_direct_root_login: True
 security_authentication_disable_inactive: True
 security_authentication_failed_password_deny: 3
 security_authentication_unlock_time: "604800"
