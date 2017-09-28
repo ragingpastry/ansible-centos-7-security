@@ -1,7 +1,7 @@
 ---
 ### Scanner
 ### Uncomment this is you are using nessus to scan
-# centos_7_security_scanner: "nessus"
+centos_7_security_scanner: "nessus"
 
 ### Yum Settings
 security_yum_verify_gpg: True
@@ -139,3 +139,11 @@ security_postfix_restrict_relaying: True
 
 
 security_banner_text: "WARNING This is a RESTRICTED ACCESS Computer System!\n\nInformation processed, stored, or disseminated via any system owned or managed by Rincon Research Corporation (RRC) IS THE PROPERTY OF RRC. RRC systems and access accounts are provided to users who are required to follow RRC's Acceptable Use Policy.  Users of all RRC systems and infrastructure have NO EXPECTATION OF PRIVACY in any data transmitted, processed, or stored by these systems.\n\nRRC systems are subject to monitoring.  Monitoring may include network analysis, automated intrusion, and misuse-detection systems, access, audits, logging, keystroke monitoring, and full-text review of files and electronic mail messages for all lawful purposes, to include ensuring the availability, integrity, and confidentiality of RRC information.  Authorized officials may examine, record, copy, and appropriately disseminate any information discovered in the course of lawful monitoring activities.\n\nAccess to an RRC system or communicating across RRC's system infrastructure signifies your consent to such monitoring and your agreement to comply with RRC's Acceptable Use Policy.  RRC may provide evidence of intrusion, misuse, misconduct, criminal activity, or other malicious acts to the appropriate law enforcement or other authorities for appropriate action, which may include criminal investigation and administrative disciplinary enforcement.\n\nBY LOGGING INTO THIS SYSTEM, YOU AGREE TO THIS BANNER\n"
+
+#############
+#    EL6    #
+#############
+security_authentication_securetty: True
+security_authentication_pass_min_length: 15
+security_authentication_pass_min_days: 1
+security_authentication_pass_max_days: 60

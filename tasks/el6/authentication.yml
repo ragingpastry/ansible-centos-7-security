@@ -1,0 +1,109 @@
+---
+- name: "Direct root Logins Not Allowed"
+  copy:
+    src: files/el6/securetty
+    dest: /etc/securetty
+    content: ''
+  when: security_authentication_securetty == True
+
+- name: "Disable POST password expiration"
+  lineinfile:
+    create: yes
+    dest: "/etc/default/useradd"
+    regexp: "^INACTIVE"
+    line: "INACTIVE=0"
+  when: security_authentication_disable_inactive == True
+
+- name: Configure login.defs
+  template:
+    src: templates/common/login.defs.j2
+    dest: /etc/login.defs
+
+- name: Configure system-auth
+  template:
+    src: templates/el6/system-auth.j2
+    dest: /etc/pam.d/system-auth-ac
+
+- name: Configure password-auth
+  template:
+    src: templates/el6/password-auth.j2
+    dest: /etc/pam.d/password-auth-ac
+
+- name: Check if pam files are links
+  stat:
+    path: "/etc/pam.d/{{ item }}"
+  register: pam_link
+  with_items:
+    - "password-auth"
+    - "system-auth"
+
+- name: Remove old files if they exist
+  file:
+    path: "/etc/pam.d/{{ item.item }}"
+    state: absent
+  with_items:
+    - "{{ pam_link.results }}"
+  when: item.stat.islnk == False
+
+- name: Create links
+  file:
+    src: /etc/pam.d/{{ item }}-ac
+    dest: /etc/pam.d/{{ item }}
+    state: link
+  with_items:
+    - "password-auth"
+    - "system-auth"
+
+- name: Ensure FIPS140-2 algorithm is used for generating account password hashes
+  lineinfile:
+    path: /etc/libuser.conf
+    line: "crypt_style = sha512"
+    regexp: "^crypt_style"
+
+- name: Ensure home directories are created for new users
+  lineinfile:
+    path: /etc/login.defs
+    line: "CREATE_HOME yes"
+    regexp: "^CREATE_HOME"
+
+- name: Set interactive session timeout
+  lineinfile:
+    path: /etc/profile
+    line: "TMOUT={{ item }}"
+    regexp: "^TMOUT"
+  with_items: "{{ security_authentication_session_timeout }}"
+
+- name: Limit the number of concurrent login sessions allowed per user
+  lineinfile:
+    path: /etc/security/limits.conf
+    line: "* hard maxlogins {{ item }}"
+    regexp: "^\\* hard maxlogins"
+  with_items: "{{ security_authentication_maxlogins }}"
+
+- name: Ensure pwquality is used for password changes
+  template:
+    src: templates/passwd.j2
+    dest: /etc/pam.d/passwd
+
+- name: Ensure the logon failure delay is set correctly in login.defs
+  lineinfile:
+    path: /etc/login.defs
+    line: "FAIL_DELAY {{ item }}"
+    regexp: "^FAIL_DELAY"
+  with_items: "{{ security_authentication_logon_failure_delay }}"
+
+- name: Ensure system date and time of last login is shown on login
+  copy:
+    src: files/postlogin-ac
+    dest: /etc/pam.d/postlogin-ac
+
+- name: Ensure system date and time of last login is shown - ssh
+  copy:
+    src: files/pam-sshd
+    dest: /etc/pam.d/sshd
+
+- name: Install packages for multifactor authentication
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ security_authentication_multifactor_packages }}"
