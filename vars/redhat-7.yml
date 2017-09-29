@@ -1,0 +1,31 @@
+security_aide_cronjob: '/usr/sbin/aide --check | /bin/mail -s "$(hostname) - AIDE Integrity Check" root@localhost'
+security_audit_configuration_file_path: /etc/audit/rules.d/audit.rules
+security_audit_user_uid_start: 1000
+security_audit_record_permission_modification_list:
+  - chown
+  - fchown
+  - lchown
+  - fchownat
+  - chmod
+  - fchmod
+  - fchmodat
+  - lchmod
+  - fchmodnat
+  - setxattr
+  - fsetxattr
+  - lsetxattr
+  - removexattr
+  - fremovexattr
+  - lremovexattr
+
+security_audit_record_permission_modification_key: "-k perm_mod"
+security_audit_audispd_configuration_files:
+  - /etc/audisp/audisp-remote.conf
+
+security_authentication_password_disable_time: 0
+
+security_sshd_ciphers: "aes128-ctr,aes192-ctr,aes256-ctr"
+security_sshd_default_host_keys:
+  - ssh_host_ecdsa_key
+  - ssh_host_ed25519_key
+  - ssh_host_rsa_key

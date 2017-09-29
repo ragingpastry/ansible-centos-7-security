@@ -1,0 +1,42 @@
+---
+- name: Configure GNOME idle timeout
+  shell: |
+    gconftool-2 --direct \
+    --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory \
+    --type int --set /apps/gnome-screensaver/idle_delay "{{ security_gnome_screensaver_inactivity_timeout / 60 }}"
+
+- name: Configure GNOME idle activation
+  shell: |
+    gconftool-2 --direct \
+    --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory \
+    --type bool --set /apps/gnome-screensaver/idle_activation_enabled "{{ security_gnome_screensaver_idle_activation }}"
+
+- name: Configure GNOME automatic locking
+  shell: |
+    gconftool-2 --direct \
+    --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory \
+    --type bool --set /apps/gnome-screensaver/lock_enabled "{{ security_gnome_screensaver_lock_enabled }}"
+
+- name: Configure GNOME screensaver mode
+  shell: |
+    gconftool-2 --direct \
+    --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory \
+    --type string --set /apps/gnome-screensaver/mode blank-only
+
+- name: Enable GNOME banner message
+  shell: |
+    gconftool-2 --direct \
+    --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory \
+    --type bool --set /apps/gdm/simple-greeter/banner_message_enable true
+
+- name: Configure GNOME banner message
+  shell: |
+    gconftool-2 --direct \
+    --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory \
+    --type string --set /apps/gdm/simple-greeter/banner_message_text "{{ security_banner_text }}"
+
+- name: Disable GNOME user list
+  shell: |
+    gconftool-2 --direct \
+    --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory \
+    --type bool --set /apps/gdm/simple-greeter/disable_user_list "{{ security_gnome_disable_user_list }}"

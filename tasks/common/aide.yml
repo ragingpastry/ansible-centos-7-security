@@ -1,0 +1,21 @@
+---
+- name: "Ensure aide is installed"
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - aide
+
+- name: "Configure periodic Execution of AIDE"
+  cron:
+    name: Run AIDE
+    minute: "05"
+    hour: "4"
+    job: "{{ security_aide_cronjob }}"
+    cron_file: /etc/crontab
+    user: root
+
+- name: "Configure AIDE"
+  copy:
+    src: files/common/aide.conf
+    dest: /etc/aide.conf

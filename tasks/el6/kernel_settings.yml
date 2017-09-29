@@ -1,0 +1,24 @@
+---
+- name: sysctl kernel settings
+  blockinfile:
+    path: /etc/sysctl.conf
+    create: True
+    block: |
+      net.ipv4.conf.default.send_redirects = {{ security_kernel_default_send_redirects }}
+      net.ipv4.conf.all.send_redirects = {{ security_kernel_all_send_redirects }}
+      net.ipv4.ip_forward = {{ security_kernel_ip_forward }}
+      net.ipv4.conf.all.rp_filter = {{ security_kernel_rp_filter }}
+      net.ipv4.conf.all.accept_redirects = {{ security_kernel_all_accept_redirects }}
+      net.ipv4.conf.all.secure_redirects = {{ security_kernel_all_secure_redirects }}
+      net.ipv4.conf.default.secure_redirects = {{ security_kernel_default_secure_redirects }}
+      net.ipv4.conf.default.accept_redirects = {{ security_kernel_default_accept_redirects }}
+      net.ipv6.conf.default.accept_redirects = {{ security_kernel_ipv6_accept_redirects }}
+      net.ipv4.icmp_echo_ignore_broadcasts = {{ security_kernel_icmp_echo_ignore_broadcasts }}
+      net.ipv4.conf.all.accept_source_route = {{ security_kernel_ipv4_all_accept_source_route }}
+      net.ipv4.conf.default.accept_source_route = {{ security_kernel_default_accept_source_route }}
+      net.ipv4.conf.all.log_martians = {{ security_kernel_log_martians }}
+      net.ipv6.conf.all.accept_source_route = {{ security_kernel_ipv6_all_accept_source_route }}
+      kernel.randomize_va_space = {{ security_kernel_kernel_randomize_va_space }}
+      fs.suid_dumpable = {{ security_kernel_fs_suid_dumpable }}
+  register: sysctl_settings
+  notify: 'reload sysctl'

@@ -1,0 +1,33 @@
+---
+- name: Converge
+  hosts: all
+  gather_facts: False
+  become: True
+  tasks:
+    - name: Install python for Ansible
+      raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
+      become: True
+      changed_when: False
+    - name: Install oscap
+      yum:
+        name: "{{ item }}"
+        state: installed
+      with_items:
+        - "openscap-scanner"
+        - "scap-security-guide"
+
+- name: Converge
+  hosts: all
+  become: True
+  roles:
+    - role: ansible-centos-7-security
+      centos_7_security_scanner: oscap
+      security_profile: stig-rhel7-disa
+      security_yum_repo_gpgcheck: False
+
+  post_tasks:
+    - name: Reboot after converge
+      shell: ( sleep 3 && /sbin/reboot & )
+      async: 0
+      poll: 0
+      changed_when: False

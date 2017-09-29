@@ -1,0 +1,24 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: vagrant
+  provider:
+    name: virtualbox
+lint:
+  name: yamllint
+platforms:
+  - name: centos6-disa-stig-workstation
+    box: centos6-disa-stig-workstation
+    raw_config_args: ['vm.synced_folder ".", "/home/vagrant/sync", disabled: true']
+    instance_raw_config_args: ['vm.synced_folder ".", "/home/vagrant/sync", disabled: true']
+provisioner:
+  name: ansible
+  lint:
+    name: ansible-lint
+scenario:
+  name: vagrant-workstation-el6
+verifier:
+  name: testinfra
+  lint:
+    name: flake8

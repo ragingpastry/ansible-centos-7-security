@@ -1,0 +1,17 @@
+---
+- name: Ensure NTP is installed
+  package:
+    name: ntp
+    state: installed
+
+- name: Ensure NTP timesource is set
+  template:
+    src: templates/el6/ntp.conf.j2
+    dest: /etc/ntp.conf
+  notify: restart ntp
+
+- name: Enable and Start NTP service
+  service:
+    name: ntpd
+    state: started
+    enabled: True

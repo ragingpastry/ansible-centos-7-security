@@ -1,0 +1,113 @@
+---
+- name: Install screen
+  package:
+    name: screen
+    state: installed
+  when: security_screen == True
+
+- name: Install openswan
+  package:
+    name: openswan
+    state: installed
+  when: security_openswan
+
+- name: Configure the login banner
+  template:
+    dest: /etc/issue
+    src: templates/common/issue.j2
+  when: security_login_banner == True
+
+- name: Disable kdump service
+  service:
+    name: kdump
+    state: stopped
+    enabled: False
+  failed_when: False
+  when: security_disable_kdump == True
+
+- name: Disable atd service
+  service:
+    name: atd
+    state: stopped
+    enabled: False
+  failed_when: False
+  when: security_disable_atd == True
+
+- name: Enable cron service
+  service:
+    name: crond
+    state: started
+    enabled: True
+  when: security_disable_cron == False
+
+- name: Disable prelinking
+  lineinfile:
+    create: True
+    path: /etc/sysconfig/prelink
+    regexp: '^PRELINKING='
+    line: 'PRELINKING=no'
+  when: security_disable_prelinking == True
+
+- name: Enable SELinux
+  selinux:
+    state: enforcing
+    policy: targeted
+  when: security_selinux_configure == True
+
+- name: Prevent unrestricted mail relaying
+  lineinfile:
+    path: /etc/postfix/main.cf
+    regexp: '^smtpd_client_restrictions'
+    line: 'smtpd_client_restrictions = permit_my_networks,reject'
+  when: security_postfix_restrict_relaying == True
+
+- name: Set system default umask
+  lineinfile:
+    path: "/etc/{{ item }}"
+    regexp: '^\s\+umask'
+    line: "     umask {{ security_default_umask }}"
+  with_items:
+    - csh.cshrc
+    - bashrc
+
+- name: Enable smb client signing
+  lineinfile:
+    path: /etc/samba/smb.conf
+    regexp: '^\s\+client signing'
+    line: '       client signing = mandatory'
+  failed_when: False
+
+- name: Set default firewall rule for incoming packets
+  lineinfile:
+    path: /etc/sysconfig/iptables
+    regexp: '^:INPUT'
+    line: ':INPUT DROP [0:0]'
+  when: security_configure_firewall == True
+
+- name: Set default firewall rule for forwarded packets
+  lineinfile:
+    path: /etc/sysconfig/iptables
+    regexp: '^:FORWARD'
+    line: ':FORWARD DROP [0:0]'
+  when: security_configure_firewall == True
+
+- name: set default ipv46 firewall rule for incoming packets
+  lineinfile:
+    path: /etc/sysconfig/ip6tables
+    regexp: '^:INPUT'
+    line: ':INPUT DROP [0:0]'
+  when: security_configure_firewall == True
+
+- name: Disable core dumps
+  lineinfile:
+    path: /etc/security/limits.conf
+    regexp: '^\* hard core'
+    line: '* hard core 0'
+  when: security_core_dump_disable == True
+
+- name: Disable interactive boot
+  lineinfile:
+    path: /etc/sysconfig/init
+    regexp: '^PROMPT'
+    line: 'PROMPT=no'
+  when: security_interactive_boot_disable == True

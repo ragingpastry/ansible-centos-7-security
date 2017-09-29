@@ -1,0 +1,31 @@
+---
+
+# tasks file for el6
+- include: el6/authentication.yml
+  when: security_authentication_configure == True
+
+- include: el6/kernel_settings.yml
+  when: security_kernel_settings_configure == True
+
+- include: el6/ntp.yml
+  when: security_ntp_configure == True
+
+- include: el6/gnome.yml
+  when: security_gnome_configure == True
+
+- include: el6/miscellaneuous.yml
+
+- include: common/audit.yml
+  when: security_audit_configure == True
+
+- include: common/aide.yml
+  when: security_aide_configure == True
+
+- include: common/sshd.yml
+  when: security_sshd_configure == True
+
+- include: common/rsyslog.yml
+  when: security_rsyslog_configure == True
+
+- include: common/modules.yml
+  when: security_module_blacklist_configure == True

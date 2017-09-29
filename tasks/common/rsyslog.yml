@@ -1,0 +1,17 @@
+---
+- name: Ensure rsyslog is installed
+  package:
+    name: rsyslog
+    state: present
+
+- name: Configure rsyslog
+  template:
+    src: templates/common/rsyslog.conf.j2
+    dest: /etc/rsyslog.conf
+  notify: restart rsyslog
+
+- name: Enable rsyslog service
+  service:
+    name: rsyslog
+    state: started
+    enabled: True

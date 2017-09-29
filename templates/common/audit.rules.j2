@@ -1,0 +1,229 @@
+## First rule - delete all
+-D
+
+## Increase the buffers to survive stress events.
+## Make this bigger for busy systems
+-b 8192
+
+{% if security_audit_record_time %}
+-a always,exit -F arch=b64 -S adjtimex -k audit_time_rules
+-a always,exit -F arch=b32 -S adjtimex -k audit_time_rules
+-a always,exit -F arch=b32 -S settimeofday -k audit_time_rules
+-a always,exit -F arch=b64 -S settimeofday -k audit_time_rules
+-a always,exit -F arch=b32 -S clock_settime -k audit_time_rules
+-a always,exit -F arch=b64 -S clock_settime -k audit_time_rules
+-w /etc/localtime -p wa -k audit_time_rules
+{% endif %}
+
+{% if security_audit_record_unauthorized_access_attempts %}
+{% if centos_7_security_scanner == 'nessus' %}
+{% set access_key = '-k access' %}
+{% else %}
+{% set access_key = '-F key=access' %}
+{% endif %}
+{% if ansible_distribution_major_version == '6' %}
+-a always,exit -F arch=b32 -S creat -F exit=-EACCES -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
+-a always,exit -F arch=b32 -S creat -F exit=-EPERM -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
+-a always,exit -F arch=b64 -S creat -F exit=-EACCES -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
+-a always,exit -F arch=b64 -S creat -F exit=-EPERM -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
+-a always,exit -F arch=b32 -S open -F exit=-EACCES -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
+-a always,exit -F arch=b32 -S open -F exit=-EPERM -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
+-a always,exit -F arch=b64 -S open -F exit=-EACCES -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
+-a always,exit -F arch=b64 -S open -F exit=-EPERM -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
+-a always,exit -F arch=b32 -S openat -F exit=-EACCES -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
+-a always,exit -F arch=b32 -S openat -F exit=-EPERM -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
+-a always,exit -F arch=b64 -S openat -F exit=-EACCES -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
+-a always,exit -F arch=b64 -S openat -F exit=-EPERM -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
+-a always,exit -F arch=b32 -S open_by_handle_at -F exit=-EACCES -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
+-a always,exit -F arch=b32 -S open_by_handle_at -F exit=-EPERM -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
+-a always,exit -F arch=b64 -S open_by_handle_at -F exit=-EACCES -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
+-a always,exit -F arch=b64 -S open_by_handle_at -F exit=-EPERM -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
+-a always,exit -F arch=b32 -S truncate -F exit=-EACCES -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
+-a always,exit -F arch=b32 -S truncate -F exit=-EPERM -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
+-a always,exit -F arch=b64 -S truncate -F exit=-EACCES -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
+-a always,exit -F arch=b64 -S truncate -F exit=-EPERM -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
+-a always,exit -F arch=b32 -S ftruncate -F exit=-EACCES -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
+-a always,exit -F arch=b32 -S ftruncate -F exit=-EPERM -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
+-a always,exit -F arch=b64 -S ftruncate -F exit=-EACCES -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
+-a always,exit -F arch=b64 -S ftruncate -F exit=-EPERM -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
+{% elif ansible_distribution_major_version == '7' %}
+-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 -k access
+-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 -k access
+-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid=0 -k access
+-a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid=0 -k access
+-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 -k access
+-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 -k access
+-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid=0 -k access
+-a always,exit -F arch=b64 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid=0 -k access
+{% endif %}
+{% endif %}
+
+{% if security_audit_record_permission_modification %}
+{% if centos_7_security_scanner == 'nessus' %}
+{% set perm_mod_key = "-k perm_mod" %}
+{% else %}
+{% set perm_mod_key = "-F key=perm_mod" %}
+{% endif %}
+{% for item in security_audit_record_permission_modification_list %}
+-a always,exit -F arch=b32 -S {{ item }} -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ perm_mod_key }}
+-a always,exit -F arch=b64 -S {{ item }} -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ perm_mod_key }}
+-a always,exit -F arch=b32 -S {{ item }} -F auid=0 {{ perm_mod_key }}
+-a always,exit -F arch=b64 -S {{ item }} -F auid=0 {{ perm_mod_key }}
+{% endfor %}
+{% endif %}
+
+{% if security_audit_record_deletion %}
+{% if centos_7_security_scanner == 'nessus' %}
+{% set delete_key = "-k delete" %}
+{% else %}
+{% set delete_key = "-F key=delete" %}
+{% endif %}
+{% if ansible_distribution_major_version == '7' %}
+-a always,exit -F arch=b32 -S rename -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ delete_key }}
+-a always,exit -F arch=b64 -S rename -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ delete_key }}
+-a always,exit -F arch=b32 -S renameat -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ delete_key }}
+-a always,exit -F arch=b64 -S renameat -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ delete_key }}
+-a always,exit -F arch=b32 -S rmdir -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ delete_key }}
+-a always,exit -F arch=b64 -S rmdir -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ delete_key }}
+-a always,exit -F arch=b32 -S unlink -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ delete_key }}
+-a always,exit -F arch=b64 -S unlink -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ delete_key }}
+-a always,exit -F arch=b32 -S unlinkat -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ delete_key }}
+-a always,exit -F arch=b64 -S unlinkat -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ delete_key }}
+{% elif ansible_distribution_major_version == '6' %}
+-a always,exit -F arch=b32 -S rmdir -S unlink -S unlinkat -S rename -S renameat -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ delete_key }}
+-a always,exit -F arch=b32 -S rmdir -S unlink -S unlinkat -S rename -S renameat -F auid=0 {{ delete_key }}
+-a always,exit -F arch=b64 -S rmdir -S unlink -S unlinkat -S rename -S renameat -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ delete_key }}
+-a always,exit -F arch=b64 -S rmdir -S unlink -S unlinkat -S rename -S renameat -F auid=0 {{ delete_key }}
+{% endif %}
+{% endif %}
+
+{% if security_audit_record_altered_logon_events %}
+-w /var/log/tallylog -p wa -k logins
+-w /var/run/faillock/ -p wa -k logins
+-w /var/log/lastlog -p wa -k logins
+{% endif %}
+
+{% if security_audit_record_selinux_commands %}
+{% if centos_7_security_scanner == 'nessus' %}
+{% set privileged_priv_change_key = '-k privileged-priv_change' %}
+{% endif %}
+-a always,exit -F path=/usr/sbin/semanage -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_priv_change_key }}
+-a always,exit -F path=/usr/sbin/setsebool -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_priv_change_key }}
+-a always,exit -F path=/usr/bin/chcon -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_priv_change_key }}
+-a always,exit -F path=/usr/sbin/restorecon -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_priv_change_key }}
+-w /etc/selinux/ -p wa -k MAC-policy
+{% endif %}
+
+{% if security_audit_record_privileged_commands %}
+{% if ansible_distribution_major_version == '7' %}
+{% if centos_7_security_scanner == 'nessus' %}
+{% set privileged_passwd_key = "-k privileged-passwd" %}
+{% set privileged_priv_change_key = "-k privileged-priv_change" %}
+{% set privileged_mount_key = "-k privileged-mount" %}
+{% set privileged_postfix_key = "-k privileged-postfix" %}
+{% set privileged_ssh_key = "-k privileged-ssh" %}
+{% set privileged_terminal_key = "-k privileged_terminal" %}
+{% set privileged_cron_key = "-k privileged-cron" %}
+{% set privileged_pam_key = "-k privileged-pam" %}
+{% else %}
+{% set privileged_command_key = "-F key=privileged" %}
+{% set privileged_mount_key = "-F key=export" %}
+{% endif %}
+-a always,exit -F path=/usr/bin/passwd -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_passwd_key | default(privileged_command_key) }}
+-a always,exit -F path=/usr/bin/unix_chkpwd -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_passwd_key | default(privileged_command_key) }}
+-a always,exit -F path=/usr/sbin/unix_chkpwd -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_passwd_key | default(privileged_command_key) }}
+-a always,exit -F path=/sbin/unix_chkpwd -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_passwd_key | default(privileged_command_key) }}
+-a always,exit -F path=/usr/bin/gpasswd -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_passwd_key | default(privileged_command_key) }}
+-a always,exit -F path=/usr/bin/chage -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_passwd_key | default(privileged_command_key) }}
+-a always,exit -F path=/usr/bin/userhelper -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_passwd_key | default(privileged_command_key) }}
+-a always,exit -F path=/usr/sbin/userhelper -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_passwd_key | default(privileged_command_key) }}
+-a always,exit -F path=/usr/bin/su -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_priv_change_key | default(privileged_command_key) }}
+-a always,exit -F path=/bin/su -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_priv_change_key | default(privileged_command_key) }}
+-a always,exit -F path=/usr/bin/sudo -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_priv_change_key | default(privileged_command_key) }}
+-a always,exit -F path=/usr/bin/sudoedit -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_priv_change_key | default(privileged_command_key) }}
+-a always,exit -F path=/bin/sudoedit -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_priv_change_key | default(privileged_command_key) }}
+-a always,exit -F path=/usr/bin/chsh -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_priv_change_key | default(privileged_command_key) }}
+-a always,exit -F path=/usr/bin/newgrp -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_priv_change_key | default(privileged_command_key) }}
+-a always,exit -F path=/usr/bin/umount -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295  {{ privileged_mount_key | default(privileged_command_key) }}
+-a always,exit -F path=/bin/umount -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295  {{ privileged_mount_key | default(privileged_command_key) }}
+-a always,exit -F arch=b32 -S mount -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_mount_key }}
+-a always,exit -F arch=b64 -S mount -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_mount_key }}
+-a always,exit -F path=/usr/sbin/postdrop -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_postfix_key | default(privileged_command_key) }}
+-a always,exit -F path=/usr/sbin/postqueue -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_postfix_key | default(privileged_command_key) }}
+-a always,exit -F path=/usr/libexec/openssh/ssh-keysign -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_ssh_key | default(privileged_command_key) }}
+-a always,exit -F path=/usr/libexec/pt_chown -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_terminal_key | default(privileged_command_key) }}
+-a always,exit -F path=/usr/bin/crontab -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_cron_key | default(privileged_command_key) }}
+-a always,exit -F path=/usr/sbin/pam_timestamp_check -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_pam_key | default(privileged_command_key) }}
+-a always,exit -F path=/sbin/pam_timestamp_check -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_pam_key | default(privileged_command_key) }}
+{% endif %}
+{% endif %}
+
+{% if security_audit_record_modules %}
+{% if centos_7_security_scanner == 'nessus' %}
+{% if ansible_distribution_major_version == '7' %}
+{% set module_key = "-k module-change" %}
+{% set module_args = "-p x -F auid!=4294967295" %}
+{% else %}
+{% set module_key = '-k module-change' %}
+{% set module_args = '-p x' %}
+{% endif %}
+{% else %}
+{% set module_key = "-F key=modules" %}
+{% set module_args = "-p x" %}
+{% endif %}
+-a always,exit -F arch=b64 -S init_module {{ module_key }}
+-a always,exit -F arch=b32 -S init_module {{ module_key }}
+-a always,exit -F arch=b64 -S delete_module {{ module_key }}
+-a always,exit -F arch=b32 -S delete_module {{ module_key }}
+-w /usr/sbin/insmod {{ module_args }} {{ module_key }}
+-w /sbin/insmod {{ module_args }} {{ module_key }}
+-w /usr/sbin/rmmod {{ module_args }} {{ module_key }}
+-w /sbin/rmmod {{ module_args }} {{ module_key }}
+-w /usr/sbin/modprobe {{ module_args }} {{ module_key }}
+-w /sbin/modprobe {{ module_args }} {{ module_key }}
+{% endif %}
+
+
+{% if security_audit_record_usergroup %}
+{% if centos_7_security_scanner == 'nessus' %}
+{% if ansible_distribution_major_version == '7' %}
+{% set usergroup_key = "identity" %}
+{% else %}
+{% set usergroup_key = 'audit_account_changes' %}
+{% endif %}
+{% else %}
+{% set usergroup_key = "audit_rules_usergroup_modification" %}
+{% endif %}
+-w /etc/group -p wa -k {{ usergroup_key }}
+-w /etc/gshadow -p wa -k {{ usergroup_key }}
+-w /etc/shadow -p wa -k {{ usergroup_key }}  
+-w /etc/passwd -p wa -k {{ usergroup_key }} 
+-w /etc/security/opasswd -p wa -k {{ usergroup_key }}
+-w /etc/opasswd -p wa -k  {{ usergroup_key }}
+{% endif %}
+
+{% if security_audit_record_network_modification %}
+-a always,exit -F arch=b32 -S sethostname -S setdomainname -k audit_network_modifications
+-a always,exit -F arch=b64 -S sethostname -S setdomainname -k audit_network_modifications
+-w /etc/issue -p wa -k audit_network_modifications
+-w /etc/issue.net -p wa -k audit_network_modifications
+-w /etc/hosts -p wa -k audit_network_modifications
+-w /etc/sysconfig/network -p wa -k audit_network_modifications
+{% endif %}
+
+{% if security_audit_record_sudoers %}
+{% if centos_7_security_scanner == 'nessus' %}
+{% if ansible_distribution_major_version == '7' %}
+{% set sudoers_key = "privileged-actions" %}
+{% else %}
+{% set sudoers_key = "actions" %}
+{% endif %}
+{% else %}
+{% set sudoers_key = "actions" %}
+{% endif %}
+-w /etc/sudoers -p wa -k actions
+-w /etc/sudoers.d -p wa -k actions
+{% endif %}
+
+
+## Set failure mode to syslog
