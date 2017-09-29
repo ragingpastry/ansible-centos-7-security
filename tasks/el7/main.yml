@@ -3,29 +3,14 @@
 - include: el7/yum.yml
   when: security_yum_verify_gpg == True
 
-- include: el7/aide.yml
-  when: security_aide_configure == True
-
 - include: el7/mounts.yml
   when: security_mounts_configure == True
-
-- include: el7/modules.yml
-  when: security_module_blacklist_configure == True
 
 - include: el7/authentication.yml
   when: security_authentication_configure == True
 
 - include: el7/kernel_settings.yml
   when: security_kernel_settings_configure == True
-
-- include: el7/audit.yml
-  when: security_audit_configure == True
-
-- include: el7/rsyslog.yml
-  when: security_rsyslog_configure == True
-
-- include: el7/sshd.yml
-  when: security_sshd_configure == True
 
 - include: el7/grub.yml
   when: security_grub_configure == True
@@ -34,3 +19,18 @@
   when: security_gnome_configure == True
 
 - include: el7/miscellaneous.yml
+
+- include: common/audit.yml
+  when: security_audit_configure == True
+
+- include: common/rsyslog.yml
+  when: security_rsyslog_configure == True
+
+- include: common/sshd.yml
+  when: security_sshd_configure == True
+
+- include: common/aide.yml
+  when: security_aide_configure == True
+
+- include: common/modules.yml
+  when: security_module_blacklist_configure == True

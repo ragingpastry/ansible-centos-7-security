@@ -1,9 +1,8 @@
 ---
 - name: "Direct root Logins Not Allowed"
-  copy:
-    src: files/el6/securetty
+  template:
+    src: templates/el6/securetty.j2
     dest: /etc/securetty
-    content: ''
   when: security_authentication_securetty == True
 
 - name: "Disable POST password expiration"
@@ -11,7 +10,7 @@
     create: yes
     dest: "/etc/default/useradd"
     regexp: "^INACTIVE"
-    line: "INACTIVE=0"
+    line: "INACTIVE={{ security_authentication_password_disable_time }}"
   when: security_authentication_disable_inactive == True
 
 - name: Configure login.defs
@@ -60,12 +59,6 @@
     line: "crypt_style = sha512"
     regexp: "^crypt_style"
 
-- name: Ensure home directories are created for new users
-  lineinfile:
-    path: /etc/login.defs
-    line: "CREATE_HOME yes"
-    regexp: "^CREATE_HOME"
-
 - name: Set interactive session timeout
   lineinfile:
     path: /etc/profile
@@ -80,27 +73,10 @@
     regexp: "^\\* hard maxlogins"
   with_items: "{{ security_authentication_maxlogins }}"
 
-- name: Ensure pwquality is used for password changes
-  template:
-    src: templates/passwd.j2
-    dest: /etc/pam.d/passwd
-
-- name: Ensure the logon failure delay is set correctly in login.defs
-  lineinfile:
-    path: /etc/login.defs
-    line: "FAIL_DELAY {{ item }}"
-    regexp: "^FAIL_DELAY"
-  with_items: "{{ security_authentication_logon_failure_delay }}"
-
 - name: Ensure system date and time of last login is shown on login
   copy:
-    src: files/postlogin-ac
+    src: files/common/postlogin-ac
     dest: /etc/pam.d/postlogin-ac
-
-- name: Ensure system date and time of last login is shown - ssh
-  copy:
-    src: files/pam-sshd
-    dest: /etc/pam.d/sshd
 
 - name: Install packages for multifactor authentication
   yum:

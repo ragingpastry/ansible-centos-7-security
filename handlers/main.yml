@@ -19,3 +19,8 @@
   service:
     name: sshd
     state: restarted
+
+- name: restart ntp
+  service:
+    name: ntpd
+    state: restarted

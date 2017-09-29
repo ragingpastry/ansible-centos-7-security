@@ -24,7 +24,7 @@ MAIL_DIR        /var/spool/mail
 #
 PASS_MAX_DAYS   {{ security_authentication_password_maximum_age |default('99999') }}
 PASS_MIN_DAYS   {{ security_authentication_password_minimum_age | default('0') }}
-PASS_MIN_LEN    {{ security_authentication_min_len | default('5') }}
+PASS_MIN_LEN    {{ security_authentication_minlen | default('5') }}
 PASS_WARN_AGE   {{ security_authentication_pass_warn_age | default('7') }}
 
 #

@@ -109,7 +109,7 @@
 
 - name: Ensure system date and time of last login is shown on login
   copy:
-    src: files/postlogin-ac
+    src: files/common/postlogin-ac
     dest: /etc/pam.d/postlogin-ac
 
 - name: Ensure system date and time of last login is shown - ssh

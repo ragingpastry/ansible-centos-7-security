@@ -2,6 +2,7 @@
 - name: Converge
   hosts: all
   gather_facts: False
+  become: True
   tasks:
     - name: Install python for Ansible
       raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
@@ -17,6 +18,7 @@
 
 - name: Converge
   hosts: all
+  become: True
   roles:
     - role: ansible-centos-7-security
       centos_7_security_scanner: oscap

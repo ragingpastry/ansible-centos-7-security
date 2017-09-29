@@ -14,6 +14,11 @@ security_aide_configure: True
 security_mounts_configure: True
 security_mount_options_tmp_noexec: True
 
+## NTP Settings
+security_ntp_configure: True
+security_ntp_timesources:
+  - ntp
+
 ### Kernel Module Settings
 security_module_blacklist_configure: True
 security_module_blacklist:
@@ -28,6 +33,9 @@ security_module_blacklist:
   - "bluetooth"
   - "dccp"
   - "sctp"
+  - "tipc"
+  - "rds"
+  - "net-pf-31"
 
 ### Authentication Settings
 security_authentication_configure: True
@@ -53,7 +61,7 @@ security_authentication_ucredit: -1
 security_authentication_lcredit: -1
 security_authentication_ocredit: -1
 security_authentication_minclass: 4
-security_authentication_maxrepeat: 2
+security_authentication_maxrepeat: 3
 security_authentication_maxclassrepeat: 4
 
 security_authentication_multifactor_packages:
@@ -66,20 +74,31 @@ security_kernel_settings_configure: True
 security_kernel_default_send_redirects: 0
 security_kernel_all_send_redirects: 0
 security_kernel_ip_forward: 0
+security_kernel_rp_filter: 1
 security_kernel_all_accept_redirects: 0
+security_kernel_all_secure_redirects: 0
+security_kernel_default_secure_redirects: 0
+security_kernel_ipv6_accept_redirects: 0
 security_kernel_default_accept_redirects: 0
 security_kernel_icmp_echo_ignore_broadcasts: 1
 security_kernel_ipv6_all_accept_source_route: 0
 security_kernel_default_accept_source_route: 0
 security_kernel_ipv4_all_accept_source_route: 0
+security_kernel_log_martians: 1
 security_kernel_kernel_randomize_va_space: 2
 security_kernel_fs_suid_dumpable: 0
 
 ### Audit Settings
 security_audit_configure: True
 security_audit_space_left_action: "email"
+security_audit_admin_space_left: 50
+security_audit_admin_space_left_action: "syslog"
+security_audit_disk_full_action: "syslog"
+security_audit_disk_error_action: "syslog"
+security_audit_record_time: True
 security_audit_record_unauthorized_access_attempts: True
 security_audit_record_altered_logon_events: True
+security_audit_record_network_modification: True
 security_audit_record_selinux_commands: True
 security_audit_record_privileged_commands: True
 security_audit_record_deletion: True
@@ -102,7 +121,8 @@ security_sshd_configure: True
 security_sshd_permit_root_login: "no"
 security_sshd_permit_empty_passwords: "no"
 security_sshd_permit_user_env: "no"
-security_sshd_ciphers: "aes128-ctr,aes192-ctr,aes256-ctr"
+# See vars/
+#security_sshd_ciphers: "aes128-ctr,aes192-ctr,aes256-ctr"
 security_sshd_kerberos_authentication: "no"
 security_sshd_strict_mode: "yes"
 security_sshd_use_privilege_separation: "yes"
@@ -112,7 +132,7 @@ security_sshd_client_alive_interval: 600
 security_sshd_client_alive_count_max: 0
 security_sshd_ignore_user_known_hosts: "yes"
 security_sshd_rhosts_rsa_authentication: "yes"
-security_sshd_macs: "hmac-sha2-512,hmac-sha2-256,hmac-sha1,hmac-sha1-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com"
+#security_sshd_macs: "hmac-sha2-512,hmac-sha2-256,hmac-sha1,hmac-sha1-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com"
 security_sshd_ignore_rhosts: "yes"
 
 ### Grub Settings
@@ -124,18 +144,23 @@ security_gnome_screensaver_inactivity_timeout: 900
 security_gnome_screensaver_idle_activation: "true"
 security_gnome_screensaver_lock_enabled: "true"
 security_gnome_screensaver_lock_delay: 5
-
+security_gnome_disable_user_list: true
 ### Miscellaneous Settings
 security_screen: True
+security_openswan: True
 security_ctrl_alt_del: True
 security_login_banner: True
 security_disable_kdump: True
+security_disable_atd: True
 security_disable_cron: False
 security_default_firewalld_zone: "drop"
-security_configure_firewalld: True
+security_configure_firewall: True
 security_disable_prelinking: True
 security_selinux_configure: True
 security_postfix_restrict_relaying: True
+security_default_umask: '077'
+security_core_dump_disable: True
+security_interactive_boot_disable: True
 
 
 security_banner_text: "WARNING This is a RESTRICTED ACCESS Computer System!\n\nInformation processed, stored, or disseminated via any system owned or managed by Rincon Research Corporation (RRC) IS THE PROPERTY OF RRC. RRC systems and access accounts are provided to users who are required to follow RRC's Acceptable Use Policy.  Users of all RRC systems and infrastructure have NO EXPECTATION OF PRIVACY in any data transmitted, processed, or stored by these systems.\n\nRRC systems are subject to monitoring.  Monitoring may include network analysis, automated intrusion, and misuse-detection systems, access, audits, logging, keystroke monitoring, and full-text review of files and electronic mail messages for all lawful purposes, to include ensuring the availability, integrity, and confidentiality of RRC information.  Authorized officials may examine, record, copy, and appropriately disseminate any information discovered in the course of lawful monitoring activities.\n\nAccess to an RRC system or communicating across RRC's system infrastructure signifies your consent to such monitoring and your agreement to comply with RRC's Acceptable Use Policy.  RRC may provide evidence of intrusion, misuse, misconduct, criminal activity, or other malicious acts to the appropriate law enforcement or other authorities for appropriate action, which may include criminal investigation and administrative disciplinary enforcement.\n\nBY LOGGING INTO THIS SYSTEM, YOU AGREE TO THIS BANNER\n"
@@ -144,6 +169,3 @@ security_banner_text: "WARNING This is a RESTRICTED ACCESS Computer System!\n\nI
 #    EL6    #
 #############
 security_authentication_securetty: True
-security_authentication_pass_min_length: 15
-security_authentication_pass_min_days: 1
-security_authentication_pass_max_days: 60
