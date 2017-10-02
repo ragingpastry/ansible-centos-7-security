@@ -115,8 +115,8 @@
 {% endif %}
 
 {% if security_audit_record_privileged_commands %}
-{% if ansible_distribution_major_version == '7' %}
 {% if centos_7_security_scanner == 'nessus' %}
+{% if ansible_distribution_major_version == '7' %}
 {% set privileged_passwd_key = "-k privileged-passwd" %}
 {% set privileged_priv_change_key = "-k privileged-priv_change" %}
 {% set privileged_mount_key = "-k privileged-mount" %}
@@ -127,7 +127,11 @@
 {% set privileged_pam_key = "-k privileged-pam" %}
 {% else %}
 {% set privileged_command_key = "-F key=privileged" %}
-{% set privileged_mount_key = "-F key=export" %}
+{% set privileged_mount_key = "-F key=mount" %}
+{% endif %}
+{% else %}
+{% set privileged_command_key = "-F key=privileged" %}
+{% set privileged_mount_key = "-F key=mount" %}
 {% endif %}
 -a always,exit -F path=/usr/bin/passwd -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_passwd_key | default(privileged_command_key) }}
 -a always,exit -F path=/usr/bin/unix_chkpwd -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_passwd_key | default(privileged_command_key) }}
@@ -148,6 +152,8 @@
 -a always,exit -F path=/bin/umount -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295  {{ privileged_mount_key | default(privileged_command_key) }}
 -a always,exit -F arch=b32 -S mount -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_mount_key }}
 -a always,exit -F arch=b64 -S mount -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_mount_key }}
+-a always,exit -F arch=b32 -S mount -F auid=0 {{ privileged_mount_key }}
+-a always,exit -F arch=b64 -S mount -F auid=0 {{ privileged_mount_key }}
 -a always,exit -F path=/usr/sbin/postdrop -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_postfix_key | default(privileged_command_key) }}
 -a always,exit -F path=/usr/sbin/postqueue -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_postfix_key | default(privileged_command_key) }}
 -a always,exit -F path=/usr/libexec/openssh/ssh-keysign -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_ssh_key | default(privileged_command_key) }}
@@ -156,7 +162,6 @@
 -a always,exit -F path=/usr/sbin/pam_timestamp_check -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_pam_key | default(privileged_command_key) }}
 -a always,exit -F path=/sbin/pam_timestamp_check -F perm=x -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ privileged_pam_key | default(privileged_command_key) }}
 {% endif %}
-{% endif %}
 
 {% if security_audit_record_modules %}
 {% if centos_7_security_scanner == 'nessus' %}
@@ -164,7 +169,7 @@
 {% set module_key = "-k module-change" %}
 {% set module_args = "-p x -F auid!=4294967295" %}
 {% else %}
-{% set module_key = '-k module-change' %}
+{% set module_key = '-k modules' %}
 {% set module_args = '-p x' %}
 {% endif %}
 {% else %}

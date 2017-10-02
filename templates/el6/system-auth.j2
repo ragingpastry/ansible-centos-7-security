@@ -19,8 +19,9 @@ account     sufficient    pam_localuser.so
 account     sufficient    pam_succeed_if.so uid < 1000 quiet
 account     required      pam_permit.so
 
-password    requisite     pam_cracklib.so dcredit={{ security_authentication_dcredit }} ucredit={{ security_authentication_ucredit}} lcredit={{ security_authentication_lcredit }} ocredit={{ security_authentication_ocredit }} difok={{ security_authentication_difok }} maxrepeat={{ security_authentication_maxrepeat }} try_first_pass retry={{ security_authentication_password_retry }} type=
-password    sufficient    pam_unix.so sha512 shadow use_authtok remember={{ security_authentication_remember_passwords }}
+password    required      pam_cracklib.so dcredit={{ security_authentication_dcredit }} ucredit={{ security_authentication_ucredit}} lcredit={{ security_authentication_lcredit }} ocredit={{ security_authentication_ocredit }} difok={{ security_authentication_difok }} maxrepeat={{ security_authentication_maxrepeat }} try_first_pass retry={{ security_authentication_password_retry }} type=
+password    required      pam_pwhistory.so use_authtok remember={{ security_authentication_remember_passwords }}
+password    sufficient    pam_unix.so sha512 shadow use_authtok 
 password    required      pam_deny.so
 
 session     optional      pam_keyinit.so revoke

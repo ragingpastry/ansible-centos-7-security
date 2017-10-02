@@ -33,6 +33,14 @@
   failed_when: False
   when: security_disable_atd == True
 
+- name: Disable abrtd service
+  service:
+    name: abrtd
+    state: stopped
+    enabled: False
+  failed_when: False
+  when: security_disable_abrtd == True
+
 - name: Enable cron service
   service:
     name: crond
@@ -62,13 +70,14 @@
   when: security_postfix_restrict_relaying == True
 
 - name: Set system default umask
-  lineinfile:
+  replace:
     path: "/etc/{{ item }}"
-    regexp: '^\s\+umask'
-    line: "     umask {{ security_default_umask }}"
+    regexp: 'umask (\d*)'
+    replace: "umask {{ security_default_umask }}"
   with_items:
     - csh.cshrc
     - bashrc
+    - profile
 
 - name: Enable smb client signing
   lineinfile:
@@ -77,26 +86,54 @@
     line: '       client signing = mandatory'
   failed_when: False
 
+- name: Ensure iptables are running
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: True
+  with_items:
+    - iptables
+    - ip6tables
+
 - name: Set default firewall rule for incoming packets
-  lineinfile:
-    path: /etc/sysconfig/iptables
-    regexp: '^:INPUT'
-    line: ':INPUT DROP [0:0]'
+  iptables:
+    chain: INPUT
+    policy: DROP
+    ip_version: "{{ item }}"
   when: security_configure_firewall == True
+  with_items:
+    - ipv4
+    - ipv6
+  notify: 
+    - save iptables
+    - save ip6tables
 
 - name: Set default firewall rule for forwarded packets
-  lineinfile:
-    path: /etc/sysconfig/iptables
-    regexp: '^:FORWARD'
-    line: ':FORWARD DROP [0:0]'
+  iptables:
+    chain: FORWARD
+    policy: DROP
+    ip_version: "{{ item }}"
+  with_items:
+    - ipv4
+    - ipv6
   when: security_configure_firewall == True
+  notify:
+    - save iptables
+    - save ip6tables
 
-- name: set default ipv46 firewall rule for incoming packets
-  lineinfile:
-    path: /etc/sysconfig/ip6tables
-    regexp: '^:INPUT'
-    line: ':INPUT DROP [0:0]'
-  when: security_configure_firewall == True
+- name: Ensure iptables allows established, related
+  iptables:
+    chain: INPUT
+    ctstate: ESTABLISHED,RELATED
+    jump: ACCEPT
+  notify:
+    - save iptables
+
+- name: Ensure ipt6tables is running
+  service:
+    name: ip6tables
+    state: started
+    enabled: True
 
 - name: Disable core dumps
   lineinfile:

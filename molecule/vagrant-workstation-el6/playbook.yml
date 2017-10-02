@@ -8,6 +8,7 @@
       raw: test -e /usr/bin/python || (apt -y update && apt install -y python-minimal)
       become: True
       changed_when: False
+
     - name: Install oscap
       yum:
         name: "{{ item }}"
@@ -15,13 +16,14 @@
       with_items:
         - "openscap-scanner"
         - "scap-security-guide"
+        - "libselinux-python"
 
 - name: Converge
   hosts: all
   become: True
   roles:
     - role: ansible-centos-7-security
-      centos_7_security_scanner: oscap
+      centos_7_security_scanner: nessus
       security_profile: stig-rhel7-disa
       security_yum_repo_gpgcheck: False
 

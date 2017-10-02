@@ -9,7 +9,7 @@ lint:
   name: yamllint
 platforms:
   - name: centos6-disa-stig-workstation
-    box: centos6-disa-stig-workstation
+    box: centos/6
     raw_config_args: ['vm.synced_folder ".", "/home/vagrant/sync", disabled: true']
     instance_raw_config_args: ['vm.synced_folder ".", "/home/vagrant/sync", disabled: true']
 provisioner:

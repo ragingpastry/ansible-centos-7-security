@@ -25,6 +25,11 @@
     dest: "{{ security_audit_configuration_file_path }}"
     src: templates/common/audit.rules.j2
 
+- name: Configure auditd.conf
+  template:
+    dest: /etc/audit/auditd.conf
+    src: templates/common/auditd.conf.j2
+
 - name: Check kernel arguments
   shell: |
     kernel_args=$(/sbin/grubby --info=ALL | grep args)

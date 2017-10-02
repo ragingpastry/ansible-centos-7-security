@@ -1,4 +1,7 @@
+# el7 specific AIDE variables
 security_aide_cronjob: '/usr/sbin/aide --check | /bin/mail -s "$(hostname) - AIDE Integrity Check" root@localhost'
+
+# el7 specific audit variables
 security_audit_configuration_file_path: /etc/audit/rules.d/audit.rules
 security_audit_user_uid_start: 1000
 security_audit_record_permission_modification_list:
@@ -22,8 +25,10 @@ security_audit_record_permission_modification_key: "-k perm_mod"
 security_audit_audispd_configuration_files:
   - /etc/audisp/audisp-remote.conf
 
+# el7 specific authentication variables
 security_authentication_password_disable_time: 0
 
+# el7 specific sshd variables
 security_sshd_ciphers: "aes128-ctr,aes192-ctr,aes256-ctr"
 security_sshd_default_host_keys:
   - ssh_host_ecdsa_key

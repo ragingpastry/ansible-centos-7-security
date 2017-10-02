@@ -1,4 +1,7 @@
+# el6 specific AIDE variables
 security_aide_cronjob: "/usr/sbin/aide --check"
+
+# el6 specific audit variables
 security_audit_configuration_file_path: /etc/audit/audit.rules
 security_audit_user_uid_start: 500
 security_audit_record_permission_modification_list:
@@ -24,9 +27,10 @@ security_audit_record_permission_modification_key: "-k perm_mod"
 security_audit_audispd_configuration_files:
   - /etc/audisp/plugins.d/syslog.conf
 
-
+# el6 specific authentication variables
 security_authentication_password_disable_time: 35
 
+# el6 specific sshd variables
 security_sshd_ciphers: "aes128-ctr,aes192-ctr,aes256-ctr,aes128-cbc,3des-cbc,aes192-cbc,aes256-cbc"
 security_sshd_macs: "hmac-sha2-512,hmac-sha2-256,hmac-sha1"
 security_sshd_default_host_keys:

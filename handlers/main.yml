@@ -24,3 +24,9 @@
   service:
     name: ntpd
     state: restarted
+
+- name: save iptables
+  shell: service iptables save
+
+- name: save ip6tables
+  shell: service ip6tables save
