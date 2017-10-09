@@ -1,0 +1,53 @@
+---
+- name: Gather system command file permissions
+  shell: "find {{ item }} -type f ! -perm 0755"
+  register: system_command_file_perms
+  changed_when: False
+  with_items:
+    - /bin
+    - /usr/bin
+    - /usr/local/bin
+    - /sbin
+    - /usr/sbin
+    - /usr/local/sbin
+  tags:
+    - RHEL-06-000047
+
+- name: Fix file permissions on system command files
+  file:
+    path: "{{ item }}"
+    mode: 0755
+  with_items: "{{ system_command_file_perms.results | map(attribute='stdout_lines') | list }}"
+  when: item != ''
+  tags:
+    - RHEL-06-000047
+
+- name: Gather rsyslog generated file permissions
+  shell: find /var/log -type f ! -group root
+  register: rsyslog_generated_files
+  changed_when: False
+  tags:
+    - RHEL-06-000134
+
+- name: Fix file permissions on rsyslog generated files
+  file:
+    path: "{{ item }}"
+    group: root
+  with_items: "{{ rsyslog_generated_files.stdout_lines }}"
+  tags:
+    - RHEL-06-000134
+
+- name: Gather rsyslog generated file permissions
+  shell: "find /var/log -maxdepth 1 -type f ! -perm 0600"
+  register: rsyslog_generated_files_perms
+  changed_when: False
+  tags:
+    - RHEL-06-000135
+
+- name: Fix file permissions on rsyslog generated files
+  file:
+    path: "{{ item }}"
+    mode: 0600
+  with_items: "{{ rsyslog_generated_files_perms.stdout_lines }}"
+  tags:
+    - RHEL-06-000135

@@ -86,55 +86,6 @@
     line: '       client signing = mandatory'
   failed_when: False
 
-- name: Ensure iptables are running
-  service:
-    name: "{{ item }}"
-    state: started
-    enabled: True
-  with_items:
-    - iptables
-    - ip6tables
-
-- name: Set default firewall rule for incoming packets
-  iptables:
-    chain: INPUT
-    policy: DROP
-    ip_version: "{{ item }}"
-  when: security_configure_firewall == True
-  with_items:
-    - ipv4
-    - ipv6
-  notify: 
-    - save iptables
-    - save ip6tables
-
-- name: Set default firewall rule for forwarded packets
-  iptables:
-    chain: FORWARD
-    policy: DROP
-    ip_version: "{{ item }}"
-  with_items:
-    - ipv4
-    - ipv6
-  when: security_configure_firewall == True
-  notify:
-    - save iptables
-    - save ip6tables
-
-- name: Ensure iptables allows established, related
-  iptables:
-    chain: INPUT
-    ctstate: ESTABLISHED,RELATED
-    jump: ACCEPT
-  notify:
-    - save iptables
-
-- name: Ensure ipt6tables is running
-  service:
-    name: ip6tables
-    state: started
-    enabled: True
-
 - name: Disable core dumps
   lineinfile:
     path: /etc/security/limits.conf

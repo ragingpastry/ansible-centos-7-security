@@ -36,6 +36,7 @@
   with_items:
     - "/etc/dconf/db/local.d/00-disable-CAD"
     - "/etc/dconf/db/local.d/01-banner-message"
+    - "/etc/dconf/db/local.d/00-screensaver"
   when: centos_7_security_scanner == 'nessus'
 
 - name: Ensure symlinks are in place

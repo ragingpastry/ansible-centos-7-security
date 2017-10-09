@@ -1,0 +1,58 @@
+---
+- name: Ensure iptables are running
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: True
+  failed_when: False
+  with_items:
+    - iptables
+    - ip6tables
+
+- name: Ensure iptables allows established, related
+  iptables:
+    chain: INPUT
+    ctstate: ESTABLISHED,RELATED
+    jump: ACCEPT
+  notify:
+    - save iptables
+
+- name: Ensure firewall port is opened
+  iptables:
+    chain: "INPUT"
+    jump: "ACCEPT"
+    protocol: tcp
+    destination_port: 22
+  notify: save iptables
+
+- name: Set default firewall rule for incoming packets
+  iptables:
+    chain: INPUT
+    policy: DROP
+    ip_version: "{{ item }}"
+  with_items:
+    - ipv4
+    - ipv6
+  notify:
+    - save iptables
+    - save ip6tables
+
+- name: Set default firewall rule for forwarded packets
+  iptables:
+    chain: FORWARD
+    policy: DROP
+    ip_version: "{{ item }}"
+  with_items:
+    - ipv4
+    - ipv6
+  notify:
+    - save iptables
+    - save ip6tables
+
+- name: Ensure iptables allows established, related
+  iptables:
+    chain: INPUT
+    ctstate: ESTABLISHED,RELATED
+    jump: ACCEPT
+  notify:
+    - save iptables

@@ -1,0 +1,24 @@
+---
+- name: Ensure firewall port is opened
+  firewalld:
+    service: ssh
+    permanent: true
+    state: enabled
+
+- name: Set default firewalld zone for incoming packets
+  lineinfile:
+    path: /etc/firewalld/firewalld.conf
+    line: "DefaultZone={{ item }}"
+    regexp: ^DefaultZone
+  with_items: "{{ security_default_firewalld_zone }}"
+
+- name: Find interface used for default route
+  shell: route | grep '^default' | grep -o '[^ ]*$'
+  changed_when: False
+  register: default_interface
+
+- name: Configure default interface for the public zone
+  command:
+    "firewall-cmd --zone=public --change-interface={{ default_interface.stdout }} --permanent"
+  changed_when: False
+  failed_when: default_interface.stdout == ''

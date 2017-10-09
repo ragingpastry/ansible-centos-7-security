@@ -21,7 +21,7 @@
 {% else %}
 {% set access_key = '-F key=access' %}
 {% endif %}
-{% if ansible_distribution_major_version == '6' %}
+{% if ansible_distribution_major_version == '7' %}
 -a always,exit -F arch=b32 -S creat -F exit=-EACCES -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
 -a always,exit -F arch=b32 -S creat -F exit=-EPERM -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
 -a always,exit -F arch=b64 -S creat -F exit=-EACCES -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
@@ -46,7 +46,7 @@
 -a always,exit -F arch=b32 -S ftruncate -F exit=-EPERM -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
 -a always,exit -F arch=b64 -S ftruncate -F exit=-EACCES -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
 -a always,exit -F arch=b64 -S ftruncate -F exit=-EPERM -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 {{ access_key }}
-{% elif ansible_distribution_major_version == '7' %}
+{% elif ansible_distribution_major_version == '6' %}
 -a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 -k access
 -a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EPERM -F auid>={{ security_audit_user_uid_start }} -F auid!=4294967295 -k access
 -a always,exit -F arch=b32 -S creat -S open -S openat -S truncate -S ftruncate -F exit=-EACCES -F auid=0 -k access
@@ -226,8 +226,8 @@
 {% else %}
 {% set sudoers_key = "actions" %}
 {% endif %}
--w /etc/sudoers -p wa -k actions
--w /etc/sudoers.d -p wa -k actions
+-w /etc/sudoers -p wa -k {{ sudoers_key }}
+-w /etc/sudoers.d -p wa -k {{ sudoers_key }}
 {% endif %}
 
 

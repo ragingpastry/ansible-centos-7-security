@@ -21,9 +21,8 @@
   become: True
   roles:
     - role: ansible-centos-7-security
-      centos_7_security_scanner: oscap
+      centos_7_security_scanner: nessus
       security_profile: stig-rhel7-disa
-      security_authentication_unlock_time: "never"
       security_yum_repo_gpgcheck: False
 
   post_tasks:

@@ -1,3 +1,4 @@
+---
 # el7 specific AIDE variables
 security_aide_cronjob: '/usr/sbin/aide --check | /bin/mail -s "$(hostname) - AIDE Integrity Check" root@localhost'
 
@@ -30,6 +31,7 @@ security_authentication_password_disable_time: 0
 
 # el7 specific sshd variables
 security_sshd_ciphers: "aes128-ctr,aes192-ctr,aes256-ctr"
+security_sshd_macs: "hmac-sha2-512,hmac-sha2-256,hmac-sha1,hmac-sha1-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com"
 security_sshd_default_host_keys:
   - ssh_host_ecdsa_key
   - ssh_host_ed25519_key

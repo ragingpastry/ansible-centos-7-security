@@ -1,5 +1,7 @@
+---
 # el6 specific AIDE variables
 security_aide_cronjob: "/usr/sbin/aide --check"
+security_aide_crontab: "/etc/crontab"
 
 # el6 specific audit variables
 security_audit_configuration_file_path: /etc/audit/audit.rules

@@ -37,17 +37,17 @@
 
 - name: Set Password Retry Prompts Permitted per-session
   template:
-    src: templates/pwquality.conf.j2
+    src: templates/el7/pwquality.conf.j2
     dest: /etc/security/pwquality.conf
 
 - name: Configure system-auth
   template:
-    src: templates/system-auth.j2
+    src: templates/el7/system-auth.j2
     dest: /etc/pam.d/system-auth-ac
 
 - name: Configure password-auth
   template:
-    src: templates/password-auth.j2
+    src: templates/el7/password-auth.j2
     dest: /etc/pam.d/password-auth-ac
 
 - name: Check if pam files are links
@@ -97,7 +97,7 @@
 
 - name: Ensure pwquality is used for password changes
   template:
-    src: templates/passwd.j2
+    src: templates/el7/passwd.j2
     dest: /etc/pam.d/passwd
 
 - name: Ensure the logon failure delay is set correctly in login.defs

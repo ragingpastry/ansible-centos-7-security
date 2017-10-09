@@ -15,8 +15,8 @@ security_mounts_configure: True
 security_mount_options_tmp_noexec: True
 
 ## NTP Settings
-security_ntp_configure: True
-security_ntp_timesources:
+security_ntp_configure: True                       # RHEL-06-000265
+security_ntp_timesources:                          # RHEL-06-000265
   - ntp
 
 ### Kernel Module Settings
@@ -61,13 +61,23 @@ security_authentication_ucredit: -1
 security_authentication_lcredit: -1
 security_authentication_ocredit: -1
 security_authentication_minclass: 4
-security_authentication_maxrepeat: 3
+security_authentication_maxrepeat: 2
 security_authentication_maxclassrepeat: 4
 
 security_authentication_multifactor_packages:
   - esc
   - authconfig-gtk
   - pam_pkcs11
+
+## ClamAV Settings
+security_clamav_configure: True
+security_clamav_exclude_paths:
+  - ^/warehouse/
+  - ^/home/
+  - ^/xmidas/
+
+## File Permission Settings
+security_file_permissions_configure: True
 
 ### Kernel Settings
 security_kernel_settings_configure: True
@@ -122,7 +132,7 @@ security_sshd_permit_root_login: "no"
 security_sshd_permit_empty_passwords: "no"
 security_sshd_permit_user_env: "no"
 # See vars/
-#security_sshd_ciphers: "aes128-ctr,aes192-ctr,aes256-ctr"
+# security_sshd_ciphers: "aes128-ctr,aes192-ctr,aes256-ctr"
 security_sshd_kerberos_authentication: "no"
 security_sshd_strict_mode: "yes"
 security_sshd_use_privilege_separation: "yes"
@@ -132,7 +142,7 @@ security_sshd_client_alive_interval: 600
 security_sshd_client_alive_count_max: 0
 security_sshd_ignore_user_known_hosts: "yes"
 security_sshd_rhosts_rsa_authentication: "yes"
-#security_sshd_macs: "hmac-sha2-512,hmac-sha2-256,hmac-sha1,hmac-sha1-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com"
+# security_sshd_macs: "hmac-sha2-512,hmac-sha2-256,hmac-sha1,hmac-sha1-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512-etm@openssh.com"
 security_sshd_ignore_rhosts: "yes"
 
 ### Grub Settings
@@ -155,7 +165,7 @@ security_disable_atd: True
 security_disable_abrtd: True
 security_disable_cron: False
 security_default_firewalld_zone: "drop"
-security_configure_firewall: True
+security_firewall_configure: True
 security_disable_prelinking: True
 security_selinux_configure: True
 security_postfix_restrict_relaying: True

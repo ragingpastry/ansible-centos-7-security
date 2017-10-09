@@ -27,6 +27,30 @@
 
 - name: save iptables
   shell: service iptables save
+  tags:
+    - skip_ansible_lint
 
 - name: save ip6tables
   shell: service ip6tables save
+  tags:
+    - skip_ansible_lint
+
+- name: reload systemd
+  shell: systemctl daemon-reload
+  tags:
+    - skip_ansible_lint
+
+- name: restart clamd
+  service:
+    name: clamd.service
+    state: restarted
+
+- name: restart clamd-scan
+  service:
+    name: clamd@scan.service
+    state: restarted
+
+- name: restart clam-freshclam
+  service:
+    name: clam-freshclam.service
+    state: restarted

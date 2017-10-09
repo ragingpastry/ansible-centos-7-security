@@ -12,7 +12,7 @@
     minute: "05"
     hour: "4"
     job: "{{ security_aide_cronjob }}"
-    cron_file: /etc/crontab
+    cron_file: "{{ security_aide_crontab | default(omit) }}"
     user: root
 
 - name: "Configure AIDE"

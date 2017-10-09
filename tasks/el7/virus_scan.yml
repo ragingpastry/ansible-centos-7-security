@@ -1,0 +1,70 @@
+---
+- name: Ensure EPEL is installed
+  shell: "yum repolist | grep -i epel"
+  register: check_epel
+  changed_when: False
+  failed_when: False
+
+- name: Install EPEL if not present
+  yum_repository:
+    name: epel
+    description: epel
+    baseurl: "{{ security_epel_repository_url }}"
+    enabled: True
+  when: check_epel.rc != 0
+
+- name: Install ClamAV
+  yum:
+    name: "{{ item }}"
+    state: installed
+  with_items:
+    - clamav-server
+    - clamav-data
+    - clamav-update
+    - clamav-filesystem
+    - clamav
+    - clamav-scanner-systemd
+    - clamav-devel
+    - clamav-lib
+    - clamav-server-systemd
+
+- name: Configure selinux for clamav
+  seboolean:
+    name: antivirus_can_scan_system
+    state: True
+    persistent: True
+  when: security_selinux_configure == True
+
+- name: Copy clamd configuration files
+  template:
+    src: templates/el7/clamd.conf.j2
+    dest: /etc/clamd.d/clamd.conf
+
+- name: Copy freshclam configuration files
+  template:
+    src: templates/el7/freshclam.conf.j2
+    dest: /etc/freshclam.conf
+
+- name: Copy clamd service files
+  copy:
+    src: "files/el7/{{ item }}"
+    dest: "/usr/lib/systemd/system/{{ item }}"
+  with_items:
+    - clamd.service
+    - clamd@scan.service
+    - clam-freshclam.service
+  notify:
+    - reload systemd
+    - restart clamd
+    - restart clamd-scan
+    - restart clam-freshclam
+
+- name: Enable clamd services
+  service:
+    name: "{{ item }}"
+    enabled: True
+    state: started
+  with_items:
+    - clamd.service
+    - clamd@scan.service
+    - clam-freshclam.service
