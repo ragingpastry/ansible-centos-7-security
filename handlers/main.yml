@@ -1,5 +1,20 @@
 ---
 # handlers file for centos-7-security
+- name: Check if we are in a chroot
+  shell: if [ "$(stat -c %d:%i /)" != "$(stat -c %d:%i /proc/1/root/.)" ]; then echo True; else echo False; fi
+  register: chroot
+  changed_when: False
+  listen:
+    - restart rsyslog
+    - restart sshd
+    - restart ntp
+    - restart clamd
+    - restart clamd-scan
+    - restart clamd-freshclam
+
+  tags:
+    - skip_ansible_lint
+
 - name: reload sysctl
   shell: sysctl -p /etc/sysctl.conf
   tags:
@@ -10,20 +25,25 @@
   tags:
     - skip_ansible_lint
 
+- name: restart auditd
+  service:
+    name: auditd
+    state: "{{ chroot.stdout | bool | ternary(omit, 'restarted') }}"
+
 - name: restart rsyslog
   service:
     name: rsyslog
-    state: restarted
+    state: "{{ chroot.stdout | bool | ternary(omit, 'restarted') }}"
 
 - name: restart sshd
   service:
     name: sshd
-    state: restarted
+    state: "{{ chroot.stdout | bool | ternary(omit, 'restarted') }}"
 
 - name: restart ntp
   service:
     name: ntpd
-    state: restarted
+    state: "{{ chroot.stdout | bool | ternary(omit, 'restarted') }}"
 
 - name: save iptables
   shell: service iptables save
@@ -43,14 +63,14 @@
 - name: restart clamd
   service:
     name: clamd.service
-    state: restarted
+    state: "{{ chroot.stdout | bool | ternary(omit, 'restarted') }}"1
 
 - name: restart clamd-scan
   service:
     name: clamd@scan.service
-    state: restarted
+    state: "{{ chroot.stdout | bool | ternary(omit, 'restarted') }}"
 
 - name: restart clam-freshclam
   service:
     name: clam-freshclam.service
-    state: restarted
+    state: "{{ chroot.stdout | bool | ternary(omit, 'restarted') }}"

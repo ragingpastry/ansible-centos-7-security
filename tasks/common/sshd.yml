@@ -35,5 +35,4 @@
 - name: Enable sshd service
   service:
     name: sshd
-    state: started
     enabled: True

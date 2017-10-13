@@ -20,7 +20,7 @@
 - name: Disable kdump service
   service:
     name: kdump
-    state: stopped
+    state: "{{ chroot.stdout | bool | ternary(omit, 'stopped') }}"
     enabled: False
   failed_when: False
   when: security_disable_kdump == True
@@ -28,7 +28,7 @@
 - name: Disable atd service
   service:
     name: atd
-    state: stopped
+    state: "{{ chroot.stdout | bool | ternary(omit, 'stopped') }}"
     enabled: False
   failed_when: False
   when: security_disable_atd == True
@@ -36,7 +36,7 @@
 - name: Disable abrtd service
   service:
     name: abrtd
-    state: stopped
+    state: "{{ chroot.stdout | bool | ternary(omit, 'stopped') }}"
     enabled: False
   failed_when: False
   when: security_disable_abrtd == True
@@ -44,7 +44,7 @@
 - name: Enable cron service
   service:
     name: crond
-    state: started
+    state: "{{ chroot.stdout | bool | ternary(omit, 'started') }}"
     enabled: True
   when: security_disable_cron == False
 

@@ -29,6 +29,7 @@
   template:
     dest: /etc/audit/auditd.conf
     src: templates/common/auditd.conf.j2
+  notify: restart auditd
 
 - name: Check kernel arguments
   shell: |
@@ -49,5 +50,4 @@
 - name: Enable auditd service
   service:
     name: auditd
-    state: started
     enabled: True

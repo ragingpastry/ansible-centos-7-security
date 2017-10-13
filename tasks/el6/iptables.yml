@@ -2,7 +2,7 @@
 - name: Ensure iptables are running
   service:
     name: "{{ item }}"
-    state: started
+    state: "{{ chroot.stdout | bool | ternary(omit, 'started') }}"
     enabled: True
   failed_when: False
   with_items:

@@ -13,5 +13,4 @@
 - name: Enable rsyslog service
   service:
     name: rsyslog
-    state: started
     enabled: True

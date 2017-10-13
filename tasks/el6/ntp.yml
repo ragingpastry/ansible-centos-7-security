@@ -13,5 +13,4 @@
 - name: Enable and Start NTP service
   service:
     name: ntpd
-    state: started
     enabled: True
