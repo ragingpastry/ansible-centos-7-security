@@ -139,26 +139,26 @@ Subsystem       sftp    /usr/libexec/openssh/sftp-server
 #       ForceCommand cvs server
 Protocol 2
 HostbasedAuthentication no
-PermitRootLogin {{ security_sshd_permit_root_login }}
-PermitEmptyPasswords {{ security_sshd_permit_empty_passwords }}
+PermitRootLogin {{ security_sshd_permit_root_login | bool | ternary('yes', 'no') }}
+PermitEmptyPasswords {{ security_sshd_permit_empty_passwords | bool | ternary('yes', 'no') }}
 Banner /etc/issue
-PermitUserEnvironment {{ security_sshd_permit_user_env }}
+PermitUserEnvironment {{ security_sshd_permit_user_env | bool | ternary('yes', 'no') }}
 Ciphers {{ security_sshd_ciphers }}
 
 # Per CCE-CCE-80221-5: Set KerberosAuthentication no in /etc/ssh/sshd_config
-KerberosAuthentication {{ security_sshd_kerberos_authentication }}
+KerberosAuthentication {{ security_sshd_kerberos_authentication | bool | ternary('yes', 'no') }}
 
 # Per CCE-CCE-80222-3: Set StrictModes yes in /etc/ssh/sshd_config
-StrictModes {{ security_sshd_strict_mode }}
+StrictModes {{ security_sshd_strict_mode | bool | ternary('yes', 'no') }}
 
 # Per CCE-CCE-80223-1: Set UsePrivilegeSeparation yes in /etc/ssh/sshd_config
-UsePrivilegeSeparation {{ security_sshd_use_privilege_separation }}
+UsePrivilegeSeparation {{ security_sshd_use_privilege_separation | bool | ternary('yes', 'no') }}
 
 # Per CCE-CCE-80224-9: Set Compression no in /etc/ssh/sshd_config
-Compression {{ security_sshd_compression }}
+Compression {{ security_sshd_compression | bool | ternary('yes', 'no') }}
 
 # Per CCE-CCE-80225-6: Set PrintLastLog yes in /etc/ssh/sshd_config
-PrintLastLog {{ security_sshd_print_lastlog }}
+PrintLastLog {{ security_sshd_print_lastlog | bool | ternary('yes', 'no') }}
 
 # Per CCE-%s %s: Set ClientAliveInterval = CCE-27433-2 in /etc/ssh/sshd_config
 ClientAliveInterval {{ security_sshd_client_alive_interval }}
@@ -167,12 +167,12 @@ ClientAliveInterval {{ security_sshd_client_alive_interval }}
 ClientAliveCountMax {{ security_sshd_client_alive_count_max }}
 
 # Per CCE-CCE-80372-6: Set IgnoreUserKnownHosts yes in /etc/ssh/sshd_config
-IgnoreUserKnownHosts {{ security_sshd_ignore_user_known_hosts }}
+IgnoreUserKnownHosts {{ security_sshd_ignore_user_known_hosts | bool | ternary('yes', 'no') }}
 
 # Per CCE-CCE-80373-4: Set RhostsRSAAuthentication no in /etc/ssh/sshd_config
-RhostsRSAAuthentication {{ security_sshd_rhosts_rsa_authentication }}
+RhostsRSAAuthentication {{ security_sshd_rhosts_rsa_authentication | bool | ternary('yes', 'no') }}
 
 # Per CCE-CCE-27455-5: Set MACs  in /etc/ssh/sshd_config
 MACs {{ security_sshd_macs }}
 
-IgnoreRhosts {{ security_sshd_ignore_rhosts }}
+IgnoreRhosts {{ security_sshd_ignore_rhosts | bool | ternary('yes', 'no') }}
